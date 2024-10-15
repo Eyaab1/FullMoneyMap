@@ -1,0 +1,103 @@
+.selected-project {
+  background-color: #f8f9fc;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%; /* Ensure full width */
+  max-width: 1200px; /* Restrict max width if needed */
+  margin: 0 auto; /* Center the project content */
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.project-name, .project-budget {
+  background-color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 48%;
+}
+
+.project-name h2, .project-budget h2 {
+  font-size: 16px;
+  color: #888;
+}
+
+.project-name h3, .project-budget h3 {
+  font-size: 24px;
+  color: #000;
+  margin-top: 8px;
+}
+
+.project-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.details-left, .details-right {
+  width: 48%;
+}
+
+.detail-item {
+  margin-bottom: 15px;
+}
+
+.detail-item label {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.detail-item p, .detail-item select {
+  margin: 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+.team-details {
+  margin-top: 20px;
+}
+
+.team-details h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.team-member {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #fff;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modify-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #5865f2;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.modify-button:hover {
+  background-color: #4753e6;
+}

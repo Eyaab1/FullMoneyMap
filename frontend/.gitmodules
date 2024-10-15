@@ -1,0 +1,3 @@
+[submodule "backend/backend/moneyMap"]
+	path = backend/backend/moneyMap
+	url = https://github.com/eyaHwess/moneyMap

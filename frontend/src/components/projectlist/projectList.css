@@ -1,0 +1,75 @@
+/* Stats section styles */
+.project-list-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stats-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.stats-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  width: 180px;
+}
+
+.stats-card h3 {
+  font-size: 16px;
+  color: #666;
+}
+
+.stats-card h2 {
+  font-size: 28px;
+  color: #333;
+}
+
+/* Project list styles */
+.project-table {
+  width: 100%;
+}
+
+.table-header, .table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr 1.5fr 1fr;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table-header {
+  font-weight: bold;
+  color: #666;
+}
+
+.table-row p {
+  margin: 0;
+}
+
+.status {
+  color: red;
+}
+
+.ongoing {
+  color: orange;
+}
+
+.details-button {
+  padding: 5px 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  background-color: #357ABD;
+}

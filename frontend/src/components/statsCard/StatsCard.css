@@ -1,0 +1,50 @@
+.stats-card {
+  background-color: white;
+  border: 2px solid;
+  border-radius: 8px;
+  padding: 10px; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 120px;   height: 60px; 
+  margin: 5px;   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
+}
+.stats-content h3 {
+  font-size: 14px;
+  color: #333;
+  margin: 0; 
+}
+
+.stats-content h2 {
+  font-size: 22px;
+  color: #000;
+  margin: 0; 
+}
+
+.percentage {
+  font-size: 14px; 
+  font-weight: bold;
+}
+.chart-container {
+  position: relative; 
+  margin: 20px 0;
+  height: 300px; 
+  display: flex; 
+}
+
+.view-report-button {
+  background-color: #007bff; 
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  right: 20px; 
+  top: 10px; 
+}
+
+.view-report-button:hover {
+  background-color: #0056b3; 
+}

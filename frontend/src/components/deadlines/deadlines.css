@@ -1,0 +1,47 @@
+.upcoming-deadlines {
+    width: 300px;
+    background-color: #f4f5fb;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .upcoming-deadlines h2 {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .upcoming-deadlines ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .deadline-item {
+    margin-bottom: 15px;
+  }
+  
+  .deadline-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .deadline-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+  
+  .deadline-date, 
+  .deadline-time {
+    font-size: 14px;
+    color: #999;
+  }
+  
+  .deadline-person {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 3px;
+  }
+  
