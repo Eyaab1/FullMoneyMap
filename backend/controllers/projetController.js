@@ -15,6 +15,16 @@ exports.getAllProjets = async (req, res) => {
 exports.addProjet = async (req, res) => {
     const { nom, date_debut, date_fin, budget, etat, id_chef } = req.body;
 
+    // Basic validation
+    if (!nom || !date_debut || !date_fin || !budget || !etat || !id_chef) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Validate the type of budget
+    if (typeof budget !== 'number') {
+        return res.status(400).json({ error: 'Budget must be a number' });
+    }
+
     try {
         const result = await pool.query(
             `INSERT INTO "Projets" (nom, date_debut, date_fin, budget, etat, id_chef) 
@@ -24,6 +34,12 @@ exports.addProjet = async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error(err);
+        
+        // Handle specific error cases
+        if (err.code === '23505') { // Unique violation
+            return res.status(409).json({ error: 'Project already exists' });
+        }
+
         res.status(500).json({ error: 'Error adding new project' });
     }
 };

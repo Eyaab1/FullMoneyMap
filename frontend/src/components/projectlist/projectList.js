@@ -1,53 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './projectList.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-
-const projects = [
-  {
-    name: "Innovo",
-    id: "#34",
-    status: "Ongoing",
-    manager: "Abdellaoui Eya",
-    deadline: "29 Oct 2:30pm",
-  },
-  {
-    name: "Momentum",
-    id: "#21",
-    status: "Ongoing",
-    manager: "Hwess Eya",
-    deadline: "12 Jan 3:30pm",
-  },
-  {
-    name: "Saturn",
-    id: "#19",
-    status: "Ongoing",
-    manager: "Anas Ayari",
-    deadline: "1 Nov 3:30pm",
-  },
-];
+// const projects = [
+//   {
+//     name: "Innovo",
+//     id: "#34",
+//     status: "Ongoing",
+//     manager: "Abdellaoui Eya",
+//     deadline: "29 Oct 2:30pm",
+//   },
+//   {
+//     name: "Momentum",
+//     id: "#21",
+//     status: "Ongoing",
+//     manager: "Hwess Eya",
+//     deadline: "12 Jan 3:30pm",
+//   },
+//   {
+//     name: "Saturn",
+//     id: "#19",
+//     status: "Ongoing",
+//     manager: "Anas Ayari",
+//     deadline: "1 Nov 3:30pm",
+//   },
+// ];
 
 const ProjectList = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);  
+  const [error, setError] = useState(null);    
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/projects/all'); // Correct API URL
+        setProjects(response.data);  
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch projects');
+        setLoading(false);
+      }
+    };
+  
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return <p>Loading projects...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
   return (
     <div className="project-list-container">
-      {/* Stats Section */}
-      <div className="stats-section">
-        <div className="stats-card">
-          <h3>All Projects</h3>
-          <h2>21</h2>
-        </div>
-        <div className="stats-card">
-          <h3>Ongoing Projects</h3>
-          <h2>7</h2>
-        </div>
-        <div className="stats-card">
-          <h3>Completed Projects</h3>
-          <h2>12</h2>
-        </div>
-      </div>
-
-      {/* Project Table */}
-      <h2>Project List</h2>
       <div className="project-table">
         <div className="table-header">
           <p>Project Name</p>
@@ -59,15 +67,19 @@ const ProjectList = () => {
         </div>
         {projects.map((project, index) => (
           <div key={index} className="table-row">
-            <p>{project.name}</p>
+            <p>{project.nom}</p> {/* Assuming 'name' is stored as 'nom' */}
             <p>{project.id}</p>
-            <p className={project.status === 'Ongoing' ? 'status ongoing' : 'status'}>{project.status}</p>
-            <p>{project.manager}</p>
-            <p>{project.deadline}</p>
+            <p className={project.etat === 'Ongoing' ? 'status ongoing' : 'status'}>
+              {project.etat} {/* Assuming 'status' is stored as 'etat' */}
+            </p>
+            <p>{project.manager}</p> {/* Ensure this matches the database field */}
+            <p>{new Date(project.date_fin).toLocaleString('fr-FR', { 
+            year: 'numeric', month: 'long', day: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+          })}</p> {/* Assuming 'date_fin' is the field for deadline */}
             <Link to={`/project`}>
-  <button className="details-button">Details</button>
-</Link>
-
+              <button className="details-button">Details</button>
+            </Link>
           </div>
         ))}
       </div>

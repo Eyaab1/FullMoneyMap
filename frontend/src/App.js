@@ -25,15 +25,9 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/transactions" element={<TransactionHistory />} />
-<<<<<<< HEAD
           <Route path="/addTransaction" element={<AddTransaction />} />
-=======
           <Route path="/projects" element={<ProjectList />} />
-<<<<<<< HEAD
->>>>>>> 40aaa82aab6845b34eebaa31e539e35bced05c20
-=======
           <Route path="/project" element={<SelectedProject />} />
->>>>>>> 00bb5ec747c867b38cefe271f79d05649a75f528
           </Routes>
         </div>
       </div>

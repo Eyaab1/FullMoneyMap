@@ -2,7 +2,9 @@ const express = require('express');
 const { connectDB } = require('./config/database');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
+const cors = require('cors');
+app.use(cors());
 
 app.use(express.json());
 
@@ -19,7 +21,8 @@ async function startServer() {
         app.use('/utilisateurs', utilisateurRoutes);
 
         const projetRoutes = require('./routes/projetRoutes');
-        app.use('/projets', projetRoutes);
+        // app.use('/projets', projetRoutes);
+        app.use('/api/projects', projetRoutes);
 
         const transactionRoutes = require('./routes/transactionRoutes');
         app.use('/transactions', transactionRoutes);
