@@ -4,11 +4,10 @@ import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/sidebar/sideBar';
 import Dashboard from './components/dashboard/dashboard';
-import StatsCard from './components/statsCard/StatsCard'; 
-import Deadlines from './components/deadlines/deadlines';  
 import ProjectList from './components/projectlist/projectList';
 import SelectedProject from './components/projectlist/selectedProject'
 import Login from './components/login/login'
+import AddProject from './components/projectlist/addProject';
 import './App.css'; 
 import TransactionHistory from './components/transactionHistory/transactionHistory';
 import AddTransaction from './components/addTransaction/addTransaction';
@@ -28,6 +27,8 @@ function App() {
           <Route path="/addTransaction" element={<AddTransaction />} />
           <Route path="/projects" element={<ProjectList />} />
           <Route path="/project" element={<SelectedProject />} />
+          <Route path="/addProject" element={<AddProject />} />
+
           </Routes>
         </div>
       </div>

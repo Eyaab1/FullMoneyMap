@@ -1,59 +1,59 @@
 const { Pool } = require('pg');
 
-// Database configuration
+// Initial pool for the 'postgres' database
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'postgres',
-    password: 'eya',
+    database: 'postgres', // Initial connection to 'postgres'
+    password: 'admin',
     port: 5432,
 });
 
 async function connectDB() {
-    if (!pool) { // Check if the pool already exists
-        pool = new Pool({
-            user: 'postgres',
-            host: 'localhost',
-            database: 'postgres', // Use default or initial DB to check
-            password: 'eya',
-            port: 5432,
-        });
+    console.log("Connecting to 'postgres' database...");
 
-        try {
-            // Check if the moneymap database exists
-            const checkDbResult = await pool.query(`
-                SELECT 1 FROM pg_database WHERE datname = 'moneymap';
-            `);
+    try {
+        // Check if 'moneymap' database exists
+        const checkDbResult = await pool.query(`
+            SELECT 1 FROM pg_database WHERE datname = 'moneymap';
+        `);
+        console.log('Check database result:', checkDbResult.rows);
 
-            if (checkDbResult.rowCount === 0) {
-                // Create the new database if it doesn't exist
-                await pool.query('CREATE DATABASE moneymap;');
-                console.log('Database "moneymap" created successfully.');
-            } else {
-                console.log('Database "moneymap" already exists.');
-            }
-        } catch (err) {
-            console.error('Error checking or creating database:', err);
-            return; // Exit if there was an error
-        } finally {
-            // Close the initial connection
-            await pool.end();
+        if (checkDbResult.rowCount === 0) {
+            console.log('Creating "moneymap" database...');
+            await pool.query('CREATE DATABASE moneymap;');
+            console.log('Database "moneymap" created successfully.');
+        } else {
+            console.log('Database "moneymap" already exists.');
         }
 
-        // Now create a new pool for the moneymap database
-        pool = new Pool({
-            user: 'postgres',
-            host: 'localhost',
-            database: 'moneymap', // Switch to 'moneymap' database
-            password: 'eya',
-            port: 5432,
-        });
+    } catch (err) {
+        console.error('Error creating or checking database:', err);
+    } finally {
+        // Close the connection to 'postgres' and switch to 'moneymap'
+        await pool.end();
+        console.log('Closed connection to "postgres".');
     }
 
-    // Create tables if they don't exist
-    await createTables(pool);
-    console.log('Connected to the moneymap database.');
+    // Now connect to the 'moneymap' database
+    const newPool = new Pool({
+        user: 'postgres',
+        host: 'localhost',
+        database: 'moneymap', // Switch to 'moneymap' database
+        password: 'admin',
+        port: 5432,
+    });
+
+    try {
+        await createTables(newPool);
+        console.log('Connected to "moneymap" database and tables created.');
+    } catch (err) {
+        console.error('Error creating tables:', err);
+    } finally {
+        await newPool.end();
+    }
 }
+
 
 // Function to create tables
 async function createTables(pool) {
