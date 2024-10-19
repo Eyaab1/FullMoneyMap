@@ -11,27 +11,29 @@ body {
     height: 100vh;
     font-family: 'Poppins', sans-serif;
 }
+
 .wrapper {
-    max-width: 600px; /* Increase max width for a larger form */
+    max-width: 600px; /* Increased max width for a larger form */
     border-radius: 10px;
     margin: 100px auto; /* Center the wrapper vertically with more space */
-    padding: 40px 50px; /* Increase padding for a better look */
+    padding: 40px 50px; /* Increased padding for a better look */
     box-shadow: 20px 20px 80px rgb(206, 206, 206);
 }
 
 .h4 {
     font-family: 'Poppins', sans-serif;
 }
+
 .btn.btn-block {
     border-radius: 20px;
-    background-color: #013289; 
+    background-color: #013289;
     color: #fff;
     transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
     padding: 6px 20px;
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: 600;
     border: none;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 .btn.btn-block:hover {
@@ -39,11 +41,10 @@ body {
 }
 
 .btn.btn-block:disabled {
-    background-color: #a5a5a5; 
-    cursor: not-allowed; 
-    transform: none; 
+    background-color: #a5a5a5;
+    cursor: not-allowed;
+    transform: none;
 }
-
 
 .input-field {
     border-radius: 5px;
@@ -78,7 +79,6 @@ a {
 }
 
 a:hover {
-    text-decoration: none;
     color: #002057;
 }
 
@@ -120,48 +120,36 @@ a:hover {
     display: block;
     background: #013289;
     position: absolute;
-    top: 48%;
-    left: 53%;
+    top: 50%;
+    left: 50%;
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(0);
-    transition: 300ms ease-in-out 0s;
+    transition: 300ms ease-in-out;
 }
 
 .option input[type="radio"]:checked ~ .checkmark {
     background: #fff;
-    transition: 300ms ease-in-out 0s;
     border: 1px solid #013289;
+    transition: 300ms ease-in-out;
 }
 
 .option input[type="radio"]:checked ~ .checkmark:after {
     transform: translate(-50%, -50%) scale(1);
 }
 
-.btn.btn-block {
-    border-radius: 20px;
-    background-color: #013289;
-    color: #fff;
-    transition: background-color 0.5s;
-}
-
-.btn.btn-block:hover {
-    background-color: #002057;
-}
-
-@media(max-width: 575px) {
+@media (max-width: 575px) {
     .wrapper {
         margin: 10px;
     }
 }
 
-@media(max-width: 424px) {
+@media (max-width: 424px) {
     .wrapper {
         padding: 30px 10px;
         margin: 5px;
     }
 
     .option {
-        position: relative;
         padding-left: 22px;
     }
 
@@ -170,12 +158,7 @@ a:hover {
     }
 
     .checkmark {
-        position: absolute;
         top: 2px;
-    }
-
-    .option .checkmark:after {
-        top: 50%;
     }
 
     #forgot {
