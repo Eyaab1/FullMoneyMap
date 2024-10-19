@@ -1,9 +1,11 @@
-// controllers/transactionController.js
 
-const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
 
-// Get all transactions with associated Depenses and Revenues
+const { pool } = require('../config/database');
+
+
+
 exports.getTransactions = async (req, res) => {
+    console.log('Fetching transactions...'); // Ensure this appears in the console
     try {
         const result = await pool.query(`
             SELECT t.*, 
@@ -20,44 +22,43 @@ exports.getTransactions = async (req, res) => {
     }
 };
 
-// Add a new expense (Dépense)
+
+
 exports.addDepense = async (req, res) => {
     const { amount, date, description, addedBy, category } = req.body;
 
-    // Validate required fields
+
     if (!amount || !date || !description || !addedBy || !category) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     const client = await pool.connect();
     try {
-        await client.query('BEGIN'); // Start transaction
+        await client.query('BEGIN');
 
-        // Insert into Transactions first
         const transactionResult = await client.query(
             `INSERT INTO "Transactions" (amount, date, description, addedBy, type) 
             VALUES ($1, $2, $3, $4, 'depense') RETURNING *`,
             [amount, date, description, addedBy]
         );
 
-        // Get the transaction_id
+   
         const transactionId = transactionResult.rows[0].id;
 
-        // Insert into Dépenses
         await client.query(
             `INSERT INTO "Depenses" (transaction_id, category) 
             VALUES ($1, $2)`,
             [transactionId, category]
         );
 
-        await client.query('COMMIT'); // Commit transaction
+        await client.query('COMMIT'); 
         res.status(201).json({ message: 'Expense added successfully', transactionId });
     } catch (err) {
-        await client.query('ROLLBACK'); // Rollback transaction in case of error
+        await client.query('ROLLBACK'); 
         console.error('Error adding new expense:', err);
         res.status(500).json({ error: 'Error adding new expense' });
     } finally {
-        client.release(); // Release the client back to the pool
+        client.release(); 
     }
 };
 

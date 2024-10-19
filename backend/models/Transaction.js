@@ -8,6 +8,7 @@ module.exports = (sequelize) => {
             autoIncrement: true,
             primaryKey: true,
         },
+        
         date: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -20,9 +21,14 @@ module.exports = (sequelize) => {
             type: DataTypes.ENUM('revenu', 'depense'),
             allowNull: false,
         },
+        addedBy: {
+            type: DataTypes.INTEGER,  
+            allowNull: false,
+        },
     }, {
         timestamps: false,
-    });
+    },
+);
 
     return Transaction;
 };

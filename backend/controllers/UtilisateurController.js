@@ -90,7 +90,25 @@ exports.getChefsDeProjet = async (req, res) => {
         res.status(500).json({ error: 'Error fetching chefs de projet' });
     }
 };
+exports.getUserIdByName = async (req, res) => {
+    const { firstName, lastName } = req.params;
 
+    try {
+        const result = await pool.query(
+            'SELECT id FROM "Utilisateurs" WHERE nom = $1 AND prenom = $2',
+            [lastName, firstName] 
+        );
+
+        if (result.rows.length > 0) {
+            res.status(200).json({ id: result.rows[0].id });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching user ID:', error);
+        res.status(500).json({ error: 'Error fetching user ID' });
+    }
+};
 // Get user by email and password for login
 exports.getUserByEmailAndPassword = async (req, res) => {
     const { email, password } = req.body;

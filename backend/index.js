@@ -13,19 +13,22 @@ async function startServer() {
         const pool = await connectDB(); // Wait for DB to be connected
         console.log('Connected to the moneymap database.');
 
-        // Now pass this pool to routes or globally
-        app.locals.pool = pool; // Attach pool to app locals for sharing across modules
+     
+        app.locals.pool = pool; 
 
         // Define your routes here (we'll add these next)
         const utilisateurRoutes = require('./routes/utilisateurRoutes');
-        app.use('/utilisateurs', utilisateurRoutes);
+        app.use('/api/utilisateurs', utilisateurRoutes); // Corrected route
 
         const projetRoutes = require('./routes/projetRoutes');
         // app.use('/projets', projetRoutes);
         app.use('/api/projects', projetRoutes);
 
+        // app.use('/transactions', transactionRoutes);
+    
         const transactionRoutes = require('./routes/transactionRoutes');
-        app.use('/transactions', transactionRoutes);
+        app.use('/api/transactions', transactionRoutes);
+
 
         const freelancerRoutes = require('./routes/freelancerRoutes');
         app.use('/freelancers', freelancerRoutes);

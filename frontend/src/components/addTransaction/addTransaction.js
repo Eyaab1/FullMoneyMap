@@ -22,11 +22,52 @@ const AddTransaction = () => {
       });
     };
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log(formData);
-      // Add form submission logic
+    
+      const url = formData.type === 'Income' 
+        ? '/api/transactions/revenu' 
+        : '/api/transactions/depense';
+    
+      const payload = {
+        amount: formData.amount,
+        date: formData.date,
+        description: formData.description,
+        addedBy: formData.addedBy,
+        ...(formData.type === 'Income' 
+          ? { id_projet: formData.projectName } 
+          : { category: formData.category })
+      };
+    
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Transaction added:', data);
+          // Handle success (e.g., clear the form, display a success message)
+        } else {
+          // If not ok, attempt to get more details of the error
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            console.error('Error adding transaction:', errorData.error);
+          } else {
+            console.error('Non-JSON response received:', await response.text());
+          }
+        }
+      } catch (error) {
+        console.error('Error in form submission:', error);
+      }
     };
+    
+    
   
     return (
         <div className="page-container"> {/* Page wrapper to center the form */}
