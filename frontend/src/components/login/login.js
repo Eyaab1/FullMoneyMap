@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css'; // Import the CSS file
+
 const Login = ({ onLogin }) => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginForm({ ...loginForm, [name]: value });
+    setErrorMessage(''); // Clear error when form is modified
+    setSuccessMessage(''); // Clear success message when form is modified
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
+    setLoading(true); // Set loading state
 
     try {
       const response = await fetch('http://localhost:5000/utilisateurs/login', {
@@ -29,7 +34,7 @@ const Login = ({ onLogin }) => {
         setSuccessMessage('Login successful!');
         console.log('User data:', data);
         onLogin(loginForm); // Call onLogin here after setting success message
-        navigate('/dashboard'); // Then navigate to the dashboard
+        navigate('/dashboard'); // Navigate to the dashboard after login
       } else {
         const errorData = await response.json(); // Get the error message
         setErrorMessage(errorData.message || 'Login failed. Please try again.');
@@ -37,6 +42,8 @@ const Login = ({ onLogin }) => {
     } catch (error) {
       setErrorMessage('An error occurred during login. Please try again.');
       console.error('Error:', error);
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
@@ -52,6 +59,7 @@ const Login = ({ onLogin }) => {
               name="email"
               placeholder="Email Address"
               required
+              aria-label="Email Address"
               onChange={handleChange}
               value={loginForm.email}
             />
@@ -65,6 +73,7 @@ const Login = ({ onLogin }) => {
               name="password"
               placeholder="Enter your Password"
               required
+              aria-label="Password"
               onChange={handleChange}
               value={loginForm.password}
             />
@@ -73,13 +82,16 @@ const Login = ({ onLogin }) => {
         {errorMessage && <p className="text-danger">{errorMessage}</p>}
         {successMessage && <p className="text-success">{successMessage}</p>}
         <br />
-        <button type="submit" className="btn btn-block text-center my-3" disabled={!loginForm.email || !loginForm.password}>
-          Login
+        <button 
+          type="submit" 
+          className="btn btn-block text-center my-3" 
+          disabled={!loginForm.email || !loginForm.password || loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>
   );
 };
-
 
 export default Login;

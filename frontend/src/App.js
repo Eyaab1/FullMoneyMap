@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/sidebar/sideBar';
 import Dashboard from './components/dashboard/dashboard';
@@ -13,6 +13,13 @@ import './App.css';
 const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // Function to handle login using the backend API
   const login = async (credentials) => {
@@ -45,7 +52,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {location.pathname !== '/login' && <Sidebar />}
+      {isAuthenticated && location.pathname !== '/login' && <Sidebar />}
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
@@ -61,7 +68,6 @@ const App = () => {
     </div>
   );
 };
-
 
 const AppWrapper = () => (
   <Router>
