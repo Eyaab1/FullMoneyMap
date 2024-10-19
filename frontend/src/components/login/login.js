@@ -1,18 +1,50 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './login.css'; // Import the CSS file
 
-const Login = () => {
-  const [loginForm, setLoginForm] = useState({ user: '', pwd: '' });
+const Login = ({ onLogin }) => {
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginForm({ ...loginForm, [name]: value });
+    setErrorMessage(''); // Clear error when form is modified
+    setSuccessMessage(''); // Clear success message when form is modified
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the login logic here
-    console.log('Logging in with:', loginForm);
+    setErrorMessage('');
+    setSuccessMessage('');
+    setLoading(true); // Set loading state
+
+    try {
+      const response = await fetch('http://localhost:5000/utilisateurs/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginForm),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSuccessMessage('Login successful!');
+        console.log('User data:', data);
+        onLogin(loginForm); // Call onLogin here after setting success message
+        navigate('/dashboard'); // Navigate to the dashboard after login
+      } else {
+        const errorData = await response.json(); // Get the error message
+        setErrorMessage(errorData.message || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred during login. Please try again.');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false); // End loading state
+    }
   };
 
   return (
@@ -23,12 +55,13 @@ const Login = () => {
           <div className="input-field">
             <span className="far fa-user p-2"></span>
             <input
-              type="text"
-              name="user"
-              placeholder="Username or Email Address"
+              type="email"
+              name="email"
+              placeholder="Email Address"
               required
+              aria-label="Email Address"
               onChange={handleChange}
-              value={loginForm.user}
+              value={loginForm.email}
             />
           </div>
         </div>
@@ -37,17 +70,24 @@ const Login = () => {
             <span className="fas fa-lock p-2"></span>
             <input
               type="password"
-              name="pwd"
+              name="password"
               placeholder="Enter your Password"
               required
+              aria-label="Password"
               onChange={handleChange}
-              value={loginForm.pwd}
+              value={loginForm.password}
             />
           </div>
         </div>
-        <br/>
-        <button type="submit" className="btn btn-block text-center my-3" disabled={!loginForm.user || !loginForm.pwd}>
-          Login
+        {errorMessage && <p className="text-danger">{errorMessage}</p>}
+        {successMessage && <p className="text-success">{successMessage}</p>}
+        <br />
+        <button 
+          type="submit" 
+          className="btn btn-block text-center my-3" 
+          disabled={!loginForm.email || !loginForm.password || loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

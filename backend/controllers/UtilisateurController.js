@@ -14,19 +14,16 @@ exports.getUtilisateurs = async (req, res) => {
     }
 };
 
-// Create a new utilisateur (user)
 exports.createUtilisateur = async (req, res) => {
     const { nom, prenom, email, password, role } = req.body;
 
-    // Validate required fields
     if (!nom || !prenom || !email || !password || !role) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
         // Hash the password with bcrypt
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
-
+        const hashedPassword = await bcrypt.hash(password, 10);
         const result = await pool.query(
             'INSERT INTO "Utilisateurs" (nom, prenom, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [nom, prenom, email, hashedPassword, role]
