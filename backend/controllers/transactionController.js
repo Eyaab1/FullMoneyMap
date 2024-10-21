@@ -5,7 +5,7 @@ const { pool } = require('../config/database');
 
 
 exports.getTransactions = async (req, res) => {
-    console.log('Fetching transactions...'); // Ensure this appears in the console
+    console.log('Fetching transactions...'); 
     try {
         const result = await pool.query(`
             SELECT t.*, 

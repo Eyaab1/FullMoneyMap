@@ -9,50 +9,86 @@ import AddProject from './components/projectlist/addProject';
 import TransactionHistory from './components/transactionHistory/transactionHistory';
 import AddTransaction from './components/addTransaction/addTransaction';
 import './App.css';
+import {jwtDecode} from 'jwt-decode';
 
 const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
-    if (user) {
-      setIsAuthenticated(true);
+
+    console.log("Token from localStorage:", token);
+    console.log("User from localStorage:", user);
+
+    if (token && user) {
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded token:", decodedToken);
+        const currentTime = Date.now() / 1000; // Current time in seconds
+
+        
+        if (decodedToken.exp >= currentTime) {
+          setIsAuthenticated(true);
+        } else {
+          logout(); 
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        logout(); 
+      }
+      
+    }
+    //hne !!!!!!
+    else {
+      setIsAuthenticated(false); 
     }
   }, []);
 
   // Function to handle login using the backend API
-  const login = async (credentials) => {
+  const login = async (credentials, navigate) => {
     try {
-      const response = await fetch('http://localhost:5000/utilisateurs/login', {
+      const response = await fetch('http://localhost:5000/api/utilisateurs/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
       });
-
+  
+      console.log('Response status:', response.status); // Log the response status
+  
       if (response.ok) {
         const data = await response.json();
-        setIsAuthenticated(true); // Update authentication status here
-        localStorage.setItem('user', JSON.stringify(data)); // Store user data if necessary
+        const { token, user } = data;
+  
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setIsAuthenticated(true); 
+        navigate('/dashboard'); 
       } else {
-        alert('Invalid credentials. Please try again.');
+        const errorData = await response.json(); // Get error data
+        console.error('Login error response:', errorData); // Log the error data
+        alert(errorData.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {
       console.error('Error logging in:', error);
       alert('An error occurred. Please try again later.');
     }
   };
+  
 
   const logout = () => {
-    setIsAuthenticated(false);
+   
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    window.location.href = '/login'; 
   };
-
   return (
     <div className="App">
-      {isAuthenticated && location.pathname !== '/login' && <Sidebar />}
+      {isAuthenticated && location.pathname !== '/login' && <Sidebar logout={logout} />}
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
@@ -63,6 +99,8 @@ const App = () => {
           <Route path="/projects" element={isAuthenticated ? <ProjectList /> : <Navigate to="/login" />} />
           <Route path="/project" element={isAuthenticated ? <SelectedProject /> : <Navigate to="/login" />} />
           <Route path="/addProject" element={isAuthenticated ? <AddProject /> : <Navigate to="/login" />} />
+          
+          
         </Routes>
       </div>
     </div>

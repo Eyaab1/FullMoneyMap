@@ -12,7 +12,20 @@ const TransactionHistory = () => {
   useEffect(()=>{
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/transactions/all');
+        const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        setLoading(false);
+        return;
+      }
+        const response = await axios.get('http://localhost:5000/api/transactions/all',
+          {
+          headers: {
+            'Authorization': `Bearer ${token}`  // Attach token to the request
+          }
+        }
+        );
         setTransactions(response.data);  
         setLoading(false);
       } catch (err) {

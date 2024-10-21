@@ -23,7 +23,7 @@ const Login = ({ onLogin }) => {
     setLoading(true); // Set loading state
 
     try {
-      const response = await fetch('http://localhost:5000/utilisateurs/login', {
+      const response = await fetch('http://localhost:5000/api/utilisateurs/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginForm),
@@ -32,18 +32,21 @@ const Login = ({ onLogin }) => {
       if (response.ok) {
         const data = await response.json();
         setSuccessMessage('Login successful!');
+       
         console.log('User data:', data);
-        onLogin(loginForm); // Call onLogin here after setting success message
-        navigate('/dashboard'); // Navigate to the dashboard after login
+        onLogin(loginForm,navigate); 
+        
+          // navigate('/dashboard'); 
+       
       } else {
-        const errorData = await response.json(); // Get the error message
+        const errorData = await response.json(); 
         setErrorMessage(errorData.message || 'Login failed. Please try again.');
       }
     } catch (error) {
       setErrorMessage('An error occurred during login. Please try again.');
       console.error('Error:', error);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
@@ -69,14 +72,14 @@ const Login = ({ onLogin }) => {
           <div className="input-field">
             <span className="fas fa-lock p-2"></span>
             <input
-              type="password"
-              name="password"
-              placeholder="Enter your Password"
-              required
-              aria-label="Password"
-              onChange={handleChange}
-              value={loginForm.password}
-            />
+                type="password"
+                name="password"
+                placeholder="Enter your Password"
+                required
+                aria-label="Password"
+                onChange={handleChange}
+                value={loginForm.password}
+              />
           </div>
         </div>
         {errorMessage && <p className="text-danger">{errorMessage}</p>}

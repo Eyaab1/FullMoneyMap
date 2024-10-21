@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useEffect} from 'react';
 import './dashboard.css';
 import { Chart, registerables } from 'chart.js';
 import StatsCard from '../statsCard/StatsCard';
@@ -28,6 +28,35 @@ const Dashboard = () => {
       },
     ],
   };
+
+   const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetch('http://localhost:5000/api/projects/all', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Include token in header
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Protected data:', data);
+        } else {
+          console.error('Failed to fetch protected data');
+        }
+      } catch (error) {
+        console.error('Error fetching protected data:', error);
+      }
+    } else {
+      console.error('No token found, please log in.');
+    }
+  };
+
+  useEffect(() => {
+    fetchProtectedData(); 
+  }, []);
 
   return (
     <div>
@@ -67,4 +96,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard; 

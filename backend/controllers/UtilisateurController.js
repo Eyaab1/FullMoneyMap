@@ -2,7 +2,7 @@
 
 const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
 const bcrypt = require('bcrypt'); // Library to hash passwords
-
+const jwt = require('jsonwebtoken');
 // Get all utilisateurs (users)
 exports.getUtilisateurs = async (req, res) => {
     try {
@@ -125,8 +125,14 @@ exports.getUserByEmailAndPassword = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Incorrect password' });
         }
+        const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' });
 
-        res.json(user);
+        // Return the token
+       
+        res.json({
+            user,
+            token,
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving user', error });
     }

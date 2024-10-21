@@ -10,8 +10,20 @@ const ProjectList = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const token = localStorage.getItem('token'); // Get token from localStorage
+
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:5000/api/projects/all'); 
+        const response = await axios.get('http://localhost:5000/api/projects/all', {
+          headers: {
+            'Authorization': `Bearer ${token}`  // Attach token to the request
+          }
+        });
         setProjects(response.data);  
         setLoading(false);
       } catch (err) {

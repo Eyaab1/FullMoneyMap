@@ -5,7 +5,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'postgres',
-    password: 'admin',
+    password: 'eya',
     port: 5432,
 });
 
@@ -15,7 +15,7 @@ async function connectDB() {
             user: 'postgres',
             host: 'localhost',
             database: 'postgres', // Use default or initial DB to check
-            password: 'admin',
+            password: 'eya',
             port: 5432,
         });
 
@@ -45,7 +45,7 @@ async function connectDB() {
             user: 'postgres',
             host: 'localhost',
             database: 'moneymap', // Switch to 'moneymap' database
-            password: 'admin',
+            password: 'eya',
             port: 5432,
         });
     }
