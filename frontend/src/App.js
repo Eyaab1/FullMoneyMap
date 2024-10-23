@@ -26,7 +26,7 @@ const App = () => {
       try {
         const decodedToken = jwtDecode(token);
         console.log("Decoded token:", decodedToken);
-        const currentTime = Date.now() / 1000; // Current time in seconds
+        const currentTime = Date.now() / 1000; 
 
         
         if (decodedToken.exp >= currentTime) {
@@ -46,7 +46,7 @@ const App = () => {
     }
   }, []);
 
-  // Function to handle login using the backend API
+
   const login = async (credentials, navigate) => {
     try {
       const response = await fetch('http://localhost:5000/api/utilisateurs/login', {
@@ -57,7 +57,7 @@ const App = () => {
         body: JSON.stringify(credentials),
       });
   
-      console.log('Response status:', response.status); // Log the response status
+      console.log('Response status:', response.status);
   
       if (response.ok) {
         const data = await response.json();
@@ -68,8 +68,8 @@ const App = () => {
         setIsAuthenticated(true); 
         navigate('/dashboard'); 
       } else {
-        const errorData = await response.json(); // Get error data
-        console.error('Login error response:', errorData); // Log the error data
+        const errorData = await response.json(); 
+        console.error('Login error response:', errorData); 
         alert(errorData.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {

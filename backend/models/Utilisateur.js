@@ -1,8 +1,8 @@
-// models/utilisateurs.js
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Utilisateur = sequelize.define('Utilisateurs', { // Table name as plural
+    const Utilisateur = sequelize.define('Utilisateurs', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -33,5 +33,5 @@ module.exports = (sequelize) => {
         timestamps: false,
     });
 
-    return Utilisateur; // Should return Utilisateur, not Utilisateurs
+    return Utilisateur; 
 };

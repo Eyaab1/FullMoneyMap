@@ -1,10 +1,7 @@
 const express = require('express');
 const { connectDB } = require('./config/database');
 const jwt = require('jsonwebtoken');
-// import { ReadableStream } from 'stream';
-// import http from 'stream-http';
-// import https from 'https-browserify';
-// import zlib from 'browserify-zlib';
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require('cors');
@@ -18,13 +15,13 @@ const authenticateJWT = (req, res, next) => {
   if (token) {
     jwt.verify(token, 'your_jwt_secret', (err, user) => {
       if (err) {
-        return res.sendStatus(403); // Invalid token
+        return res.sendStatus(403);
       }
-      req.user = user; // Attach the decoded token to the request object
+      req.user = user; 
       next();
     });
   } else {
-    res.sendStatus(401); // No token provided
+    res.sendStatus(401); 
   }
 };
 async function startServer() {
@@ -32,18 +29,15 @@ async function startServer() {
       const pool = await connectDB();
       console.log('Connected to the moneymap database.');
       app.locals.pool = pool; 
-
-      // Import routes
       const utilisateurRoutes = require('./routes/utilisateurRoutes');
       const projetRoutes = require('./routes/projetRoutes');
       const transactionRoutes = require('./routes/transactionRoutes');
       const freelancerRoutes = require('./routes/freelancerRoutes');
-
-      // Routes
-      app.use('/api/utilisateurs', utilisateurRoutes); // Login route (no auth)
-      app.use('/api/projects', authenticateJWT, projetRoutes); // Protected route
-      app.use('/api/transactions', authenticateJWT, transactionRoutes); // Protected route
-      app.use('/freelancers', freelancerRoutes); // Freelancers route (add auth if needed)
+ 
+      app.use('/api/utilisateurs', utilisateurRoutes); 
+      app.use('/api/projects', authenticateJWT, projetRoutes); 
+      app.use('/api/transactions', authenticateJWT, transactionRoutes);
+      app.use('/freelancers', freelancerRoutes);
 
       app.listen(PORT, () => {
           console.log(`Server is running on port ${PORT}`);

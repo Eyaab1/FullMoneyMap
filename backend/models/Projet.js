@@ -1,4 +1,4 @@
-// models/Projet.js
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Utilisateurs', // Ensure this matches the actual table name
+                model: 'Utilisateurs', 
                 key: 'id',
             },
         },
@@ -48,7 +48,7 @@ module.exports = (sequelize) => {
         },
     });
 
-    // Define associations
+ 
     Projet.associate = (models) => {
         models.Utilisateurs.hasMany(Projet, { foreignKey: 'id_chef' });
         Projet.belongsTo(models.Utilisateurs, { foreignKey: 'id_chef' });

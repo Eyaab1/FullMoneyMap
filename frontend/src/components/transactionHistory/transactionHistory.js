@@ -22,7 +22,7 @@ const TransactionHistory = () => {
         const response = await axios.get('http://localhost:5000/api/transactions/all',
           {
           headers: {
-            'Authorization': `Bearer ${token}`  // Attach token to the request
+            'Authorization': `Bearer ${token}`
           }
         }
         );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './login.css'; // Import the CSS file
+import './login.css'; 
 
 const Login = ({ onLogin }) => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -12,15 +12,15 @@ const Login = ({ onLogin }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginForm({ ...loginForm, [name]: value });
-    setErrorMessage(''); // Clear error when form is modified
-    setSuccessMessage(''); // Clear success message when form is modified
+    setErrorMessage(''); 
+    setSuccessMessage(''); 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
-    setLoading(true); // Set loading state
+    setLoading(true); 
 
     try {
       const response = await fetch('http://localhost:5000/api/utilisateurs/login', {

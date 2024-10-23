@@ -62,48 +62,38 @@ exports.addDepense = async (req, res) => {
     }
 };
 
-// Add a new revenue (Revenu)
+
 exports.addRevenu = async (req, res) => {
     const { amount, date, description, addedBy, id_projet } = req.body;
-
-    // Validate required fields
     if (!amount || !date || !description || !addedBy || !id_projet) {
         return res.status(400).json({ error: 'All fields are required' });
     }
-
     const client = await pool.connect();
     try {
-        await client.query('BEGIN'); // Start transaction
-
-        // Insert into Transactions first
+        await client.query('BEGIN');
         const transactionResult = await client.query(
             `INSERT INTO "Transactions" (amount, date, description, addedBy, type) 
             VALUES ($1, $2, $3, $4, 'revenu') RETURNING *`,
             [amount, date, description, addedBy]
         );
-
-        // Get the transaction_id
         const transactionId = transactionResult.rows[0].id;
-
-        // Insert into Revenues
         await client.query(
             `INSERT INTO "Revenues" (transaction_id, id_projet) 
             VALUES ($1, $2)`,
             [transactionId, id_projet]
         );
-
-        await client.query('COMMIT'); // Commit transaction
+        await client.query('COMMIT'); 
         res.status(201).json({ message: 'Revenue added successfully', transactionId });
     } catch (err) {
-        await client.query('ROLLBACK'); // Rollback transaction in case of error
+        await client.query('ROLLBACK');
         console.error('Error adding new revenue:', err);
         res.status(500).json({ error: 'Error adding new revenue' });
     } finally {
-        client.release(); // Release the client back to the pool
+        client.release();
     }
 };
 
-// Get all expenses (Dépenses)
+
 exports.getDepenses = async (req, res) => {
     try {
         const result = await pool.query(`
@@ -118,7 +108,6 @@ exports.getDepenses = async (req, res) => {
     }
 };
 
-// Get all revenues (Revenues)
 exports.getRevenues = async (req, res) => {
     try {
         const result = await pool.query(`

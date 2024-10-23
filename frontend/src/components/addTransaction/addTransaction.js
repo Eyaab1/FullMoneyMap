@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './addTransaction.css';
 import axios from 'axios';
@@ -9,13 +9,25 @@ import axios from 'axios';
 const AddTransaction = () => {
     const [formData, setFormData] = useState({
       addedBy: '',
-      type: '', // Default to 'Outcome'
+      type: '',
       date: '',
       amount: '',
       description: '',
-      projectName: '', // This will be shown only if type is 'Income'
+      projectName: '', 
       category: '' 
     });
+  
+    useEffect(() => {
+     
+      const user = JSON.parse(localStorage.getItem('user'));
+      
+      if (user && user.id) {
+        setFormData((prevState) => ({
+          ...prevState,
+          addedBy: user.id 
+        }));
+      }
+    }, []);
   
     const handleChange = (e) => {
       setFormData({
@@ -26,53 +38,55 @@ const AddTransaction = () => {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-    
+  
+      const token = localStorage.getItem('token'); 
+  
       const url = formData.type === 'Income' 
-        ? '/api/transactions/revenu' 
-        : '/api/transactions/depense';
-    
+          ? 'http://localhost:5000/api/transactions/revenu' 
+          : 'http://localhost:5000/api/transactions/depense';
+  
       const payload = {
-        amount: formData.amount,
-        date: formData.date,
-        description: formData.description,
-        addedBy: formData.addedBy,
-        ...(formData.type === 'Income' 
-          ? { id_projet: formData.projectName } 
-          : { category: formData.category })
+          amount: formData.amount,
+          date: formData.date,
+          description: formData.description,
+          addedBy: formData.addedBy,
+          ...(formData.type === 'Income' 
+              ? { id_projet: formData.projectName } 
+              : { category: formData.category })
       };
-    
+  
       try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
-    
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Transaction added:', data);
-          // Handle success (e.g., clear the form, display a success message)
-        } else {
-          // If not ok, attempt to get more details of the error
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            console.error('Error adding transaction:', errorData.error);
+          const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`, 
+              },
+              body: JSON.stringify(payload),
+          });
+  
+          if (response.ok) {
+              const data = await response.json();
+              console.log('Transaction added:', data);
+             
           } else {
-            console.error('Non-JSON response received:', await response.text());
+              const contentType = response.headers.get('content-type');
+              if (contentType && contentType.includes('application/json')) {
+                  const errorData = await response.json();
+                  console.error('Error adding transaction:', errorData.error);
+              } else {
+                  console.error('Non-JSON response received:', await response.text());
+              }
           }
-        }
       } catch (error) {
-        console.error('Error in form submission:', error);
+          console.error('Error in form submission:', error);
       }
-    };
+  };
     
     
   
     return (
-        <div className="page-container"> {/* Page wrapper to center the form */}
+        <div className="page-container">
         <div className="add-transaction-container">
           <h3>Add Transaction</h3>
           <form onSubmit={handleSubmit} className="add-transaction-form">
