@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 
-// Database configuration
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -10,23 +9,21 @@ const pool = new Pool({
 });
 
 async function connectDB() {
-    if (!pool) { // Check if the pool already exists
+    if (!pool) {
         pool = new Pool({
             user: 'postgres',
             host: 'localhost',
-            database: 'postgres', // Use default or initial DB to check
+            database: 'postgres', 
             password: 'admin',
             port: 5432,
         });
 
         try {
-            // Check if the moneymap database exists
             const checkDbResult = await pool.query(`
                 SELECT 1 FROM pg_database WHERE datname = 'moneymap';
             `);
 
             if (checkDbResult.rowCount === 0) {
-                // Create the new database if it doesn't exist
                 await pool.query('CREATE DATABASE moneymap;');
                 console.log('Database "moneymap" created successfully.');
             } else {
@@ -34,9 +31,9 @@ async function connectDB() {
             }
         } catch (err) {
             console.error('Error checking or creating database:', err);
-            return; // Exit if there was an error
+            return;
         } finally {
-            // Close the initial connection
+            
             await pool.end();
         }
 

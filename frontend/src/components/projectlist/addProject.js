@@ -24,7 +24,6 @@ const AddProject = () => {
     const handleSubmit = (e) => {
       e.preventDefault();
       console.log(formData);
-      // Add form submission logic
     };
   
     return (
