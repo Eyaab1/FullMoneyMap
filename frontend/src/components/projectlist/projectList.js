@@ -3,30 +3,6 @@ import './projectList.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-// const projects = [
-//   {
-//     name: "Innovo",
-//     id: "#34",
-//     status: "Ongoing",
-//     manager: "Abdellaoui Eya",
-//     deadline: "29 Oct 2:30pm",
-//   },
-//   {
-//     name: "Momentum",
-//     id: "#21",
-//     status: "Ongoing",
-//     manager: "Hwess Eya",
-//     deadline: "12 Jan 3:30pm",
-//   },
-//   {
-//     name: "Saturn",
-//     id: "#19",
-//     status: "Ongoing",
-//     manager: "Anas Ayari",
-//     deadline: "1 Nov 3:30pm",
-//   },
-// ];
-
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);  
@@ -34,8 +10,20 @@ const ProjectList = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
+      const token = localStorage.getItem('token'); // Get token from localStorage
+
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:5000/api/projects/all'); // Correct API URL
+        const response = await axios.get('http://localhost:5000/api/projects/all', {
+          headers: {
+            'Authorization': `Bearer ${token}`  // Attach token to the request
+          }
+        });
         setProjects(response.data);  
         setLoading(false);
       } catch (err) {

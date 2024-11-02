@@ -1,4 +1,4 @@
-// models/Revenu.js
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             primaryKey: true,
             references: {
-                model: 'Transaction', // Reference as a string
+                model: 'Transaction', 
                 key: 'id',
             },
         },
@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Projet', // Reference as a string
+                model: 'Projet', 
                 key: 'id',
             },
         },
@@ -23,18 +23,17 @@ module.exports = (sequelize) => {
         timestamps: false,
     });
 
-    // Ensure that the amount is positive
+
     Revenu.beforeValidate(async (revenu) => {
-        const transaction = await sequelize.models.Transaction.findByPk(revenu.id); // Access Transaction model from sequelize instance
+        const transaction = await sequelize.models.Transaction.findByPk(revenu.id); 
         if (transaction && transaction.amount <= 0) {
             throw new Error('Amount for revenu must be positive.');
         }
     });
 
-    // Define associations
     Revenu.associate = (models) => {
         Revenu.belongsTo(models.Transaction, { foreignKey: 'id' });
-        Revenu.belongsTo(models.Projet, { foreignKey: 'id_projet' }); // Adding association to Projet
+        Revenu.belongsTo(models.Projet, { foreignKey: 'id_projet' }); 
     };
 
     return Revenu;

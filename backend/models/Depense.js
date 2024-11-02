@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             primaryKey: true,
             references: {
-                model: 'Transaction', // Reference as a string
+                model: 'Transaction', 
                 key: 'id',
             },
         },
@@ -19,15 +19,14 @@ module.exports = (sequelize) => {
         timestamps: false,
     });
 
-    // Ensure that the amount is negative
     Depense.beforeValidate(async (depense) => {
-        const transaction = await sequelize.models.Transaction.findByPk(depense.id); // Access Transaction model from sequelize instance
+        const transaction = await sequelize.models.Transaction.findByPk(depense.id);
         if (transaction && transaction.amount >= 0) {
             throw new Error('Amount for depense must be negative.');
         }
     });
 
-    // Define associations
+    
     Depense.associate = (models) => {
         Depense.belongsTo(models.Transaction, { foreignKey: 'id' });
     };

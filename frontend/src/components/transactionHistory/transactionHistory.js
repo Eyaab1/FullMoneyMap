@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './transactionHistory.css'; 
 import { useNavigate } from 'react-router-dom';
-const transactions = [
-  { transaction: 'Rent', id: '#7890328', amount: '- 13.000 dt', date: '16 Jan 2:30pm', color: 'red' },
-  { transaction: 'Technologie et logiciels', id: '#3948509', amount: '- 24.000 dt', date: '15 Jan 3:30pm', color: 'red' },
-  { transaction: 'Services pour consulting', id: '#2980298', amount: '+ 50.000 dt', date: '14 Jan 2:30pm', color: 'green' },
-];
+import axios from 'axios';
+
 
 const TransactionHistory = () => {
   const navigate = useNavigate();
-  return (
+  const [transactions,setTransactions]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState(null);
+  useEffect(()=>{
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        setLoading(false);
+        return;
+      }
+        const response = await axios.get('http://localhost:5000/api/transactions/all',
+          {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+        );
+        setTransactions(response.data);  
+        setLoading(false);
+      } catch (err) {
+        setError('Error fetching transactions');
+        setLoading(false);
+      }
+    };
+    fetchTransactions();
     
+  },[]);
+  if(loading){
+    return <div>Loading Transaction...</div>;
+  }if (error){
+    return <div>{error}</div>;
+  }
+  return (
     <div className="transaction-history">
       <div className="transaction-header">
         <h3>Transaction History</h3>
@@ -30,7 +61,7 @@ const TransactionHistory = () => {
             <th>Amount</th>
             <th>Date</th>
           </tr>
-        </thead> b
+        </thead> 
         <tbody>
           {transactions.map((item, index) => (
             <tr key={index}>

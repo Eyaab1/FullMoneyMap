@@ -1,7 +1,7 @@
-// models/Freelancer.js
+
 const { DataTypes } = require('sequelize');
 
-// Define the specialties as an object
+
 const Specialties = {
     FRONT_END_DEVELOPER: 'Front-End Developer',
     BACK_END_DEVELOPER: 'Back-End Developer',
@@ -12,7 +12,7 @@ const Specialties = {
     SOCIAL_MEDIA_MANAGER: 'Social Media Manager',
 };
 
-// Export a function that defines the Freelancer model
+
 module.exports = (sequelize) => {
     const Freelancer = sequelize.define('Freelancer', {
         id: {

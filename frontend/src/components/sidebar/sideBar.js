@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './sideBar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ logout }) => {
   return (
     <div className="sidebar">
       <div className="sidebar-logo">
@@ -39,6 +39,7 @@ const Sidebar = () => {
             <span>Settings</span>
           </Link>
         </li>
+        <li><button onClick={logout}>Logout</button></li>
       </ul>
     </div>
   );
