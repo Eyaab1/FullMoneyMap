@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import './addProject.css';
 
 
@@ -52,8 +53,8 @@ const AddProject = () => {
               >
                 {/*liste des managers*/}
                 <option value="" disabled >Select a manager</option>
-                <option value="Income">Income</option>
-                <option value="Outcome">Outcome</option>
+                {/* <option value="Income">Income</option>
+                <option value="Outcome">Outcome</option> */}
               </select>
             </div>
   
@@ -97,7 +98,8 @@ const AddProject = () => {
 
   
             <div className="form-buttons">
-            <button type="button" className="cancel-button">CANCEL</button>
+            <Link to="/projects"> <button type="button" className="cancel-button">CANCEL</button> </Link>
+            
     <button manager="submit" className="add-button">ADD</button>
     
   </div>

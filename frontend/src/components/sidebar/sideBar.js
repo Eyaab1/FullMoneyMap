@@ -39,7 +39,12 @@ const Sidebar = ({ logout }) => {
             <span>Settings</span>
           </Link>
         </li>
-        <li><button onClick={logout}>Logout</button></li>
+        <li>
+        <Link to="/login" className="menu-item" onClick={logout}>
+            <span className="icon"> 🚪 </span>
+            <span>Logout</span> 
+          </Link>
+          </li>
       </ul>
     </div>
   );

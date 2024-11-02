@@ -1,7 +1,7 @@
 
-const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
+const { pool } = require('../config/database'); 
 
-// Get all projects
+
 exports.getAllProjets = async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM "Projets"');
@@ -11,16 +11,16 @@ exports.getAllProjets = async (req, res) => {
         res.status(500).json({ error: 'Error fetching all projects' });
     }
 };
-// Add a new project
+
 exports.addProjet = async (req, res) => {
     const { nom, date_debut, date_fin, budget, etat, id_chef } = req.body;
 
-    // Basic validation
+
     if (!nom || !date_debut || !date_fin || !budget || !etat || !id_chef) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Validate the type of budget
+  
     if (typeof budget !== 'number') {
         return res.status(400).json({ error: 'Budget must be a number' });
     }
@@ -35,8 +35,7 @@ exports.addProjet = async (req, res) => {
     } catch (err) {
         console.error(err);
         
-        // Handle specific error cases
-        if (err.code === '23505') { // Unique violation
+        if (err.code === '23505') { 
             return res.status(409).json({ error: 'Project already exists' });
         }
 
@@ -44,7 +43,7 @@ exports.addProjet = async (req, res) => {
     }
 };
 
-// Get project by name
+
 exports.getProjetByName = async (req, res) => {
     const { nom } = req.params;
 
@@ -61,7 +60,7 @@ exports.getProjetByName = async (req, res) => {
     }
 };
 
-// Get projects by chef ID
+
 exports.getProjetsByChef = async (req, res) => {
     const { id_chef } = req.params;
 
@@ -74,7 +73,7 @@ exports.getProjetsByChef = async (req, res) => {
     }
 };
 
-// Get project status (etat)
+
 exports.getProjetEtat = async (req, res) => {
     const { id } = req.params;
 
@@ -91,7 +90,7 @@ exports.getProjetEtat = async (req, res) => {
     }
 };
 
-// Change project status (etat)
+
 exports.changeProjetEtat = async (req, res) => {
     const { id } = req.params;
     const { etat } = req.body;
@@ -112,7 +111,7 @@ exports.changeProjetEtat = async (req, res) => {
     }
 };
 
-// Change project end date (date_fin)
+
 exports.changeDateFin = async (req, res) => {
     const { id } = req.params;
     const { date_fin } = req.body;
