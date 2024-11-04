@@ -1,7 +1,7 @@
 import React, { useState ,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import './addTransaction.css';
-import axios from 'axios';
+
 
 
 
@@ -67,6 +67,7 @@ const AddTransaction = () => {
   
           if (response.ok) {
               const data = await response.json();
+              
               console.log('Transaction added:', data);
              
           } else {

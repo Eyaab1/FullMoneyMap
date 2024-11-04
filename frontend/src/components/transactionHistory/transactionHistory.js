@@ -9,7 +9,12 @@ const TransactionHistory = () => {
   const [transactions,setTransactions]=useState([]);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState(null);
+  const capitalizeFirstLetter = (name) => {
+    if (!name) return ''; // Handle empty names
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
   useEffect(()=>{
+ 
     const fetchTransactions = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -23,10 +28,15 @@ const TransactionHistory = () => {
           {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
-        }
-        );
-        setTransactions(response.data);  
+          }});
+
+        const transactionsWithNames = await Promise.all(response.data.map(async (transaction) => {
+          const userResponse = await axios.get(`http://localhost:5000/api/utilisateurs/${transaction.addedBy}`);
+          
+          return { ...transaction, addedByName: userResponse.data.nom }; 
+        }));
+        
+        setTransactions(transactionsWithNames);   
         setLoading(false);
       } catch (err) {
         setError('Error fetching transactions');
@@ -56,22 +66,34 @@ const TransactionHistory = () => {
       <table className="transaction-table">
         <thead>
           <tr>
-            <th>Transaction</th>
+          <th>Transaction</th>
             <th>ID</th>
             <th>Amount</th>
             <th>Date</th>
+            <th>Added By</th>
+            <th>Type</th>
           </tr>
         </thead> 
         <tbody>
-          {transactions.map((item, index) => (
-            <tr key={index}>
-              <td>{item.transaction}</td>
-              <td>{item.id}</td>
-              <td style={{ color: item.color }}>{item.amount}</td>
-              <td>{item.date}</td>
-            </tr>
-          ))}
-        </tbody>
+  {transactions.map((transaction) => (
+    <tr key={transaction.id}>
+      <td>{capitalizeFirstLetter(transaction.description)}</td>
+      <td>{transaction.id}</td>
+      <td>
+        {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
+      </td>
+      <td>
+        {new Date(transaction.date).toLocaleDateString('fr-TN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        })}
+      </td>
+      <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
+      <td>{transaction.type === 'Income' ? 'Income' : 'Outcome'}</td>
+    </tr>
+  ))}
+</tbody>
       </table>
     </div>
   );

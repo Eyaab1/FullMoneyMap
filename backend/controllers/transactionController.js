@@ -37,11 +37,11 @@ exports.addDepense = async (req, res) => {
         await client.query('BEGIN');
 
         const transactionResult = await client.query(
-            `INSERT INTO "Transactions" (amount, date, description, addedBy, type) 
-            VALUES ($1, $2, $3, $4, 'depense') RETURNING *`,
+            `INSERT INTO "Transactions" (amount, date, description, "addedBy", type) 
+            VALUES ($1, $2, $3, $4, 'revenu') RETURNING *`,
             [amount, date, description, addedBy]
-        );
-
+        ); 
+        
    
         const transactionId = transactionResult.rows[0].id;
 
@@ -72,10 +72,10 @@ exports.addRevenu = async (req, res) => {
     try {
         await client.query('BEGIN');
         const transactionResult = await client.query(
-            `INSERT INTO "Transactions" (amount, date, description, addedBy, type) 
+            `INSERT INTO "Transactions" (amount, date, description, "addedBy", type) 
             VALUES ($1, $2, $3, $4, 'revenu') RETURNING *`,
             [amount, date, description, addedBy]
-        );
+        );        
         const transactionId = transactionResult.rows[0].id;
         await client.query(
             `INSERT INTO "Revenues" (transaction_id, id_projet) 
