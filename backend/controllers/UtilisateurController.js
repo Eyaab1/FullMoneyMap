@@ -4,9 +4,10 @@ const { pool } = require('../config/database'); // Adjust the path to where your
 const bcrypt = require('bcrypt'); // Library to hash passwords
 const jwt = require('jsonwebtoken');
 // Get all utilisateurs (users)
+
 exports.getUtilisateurs = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM "Utilisateurs"');
+        const result = await pool.query('SELECT * FROM public."Utilisateurs"');
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -90,22 +91,24 @@ exports.getFinanciers = async (req, res) => {
     }
 };
 
-// Get all Chefs de Projet
 exports.getChefsDeProjet = async (req, res) => {
     try {
         const result = await pool.query(
             'SELECT * FROM "Utilisateurs" WHERE role = $1',
             ['chef de projet']
         );
+
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'No chefs de projet found' });
         }
         res.status(200).json(result.rows);
     } catch (error) {
-        console.error('Error fetching chefs de projet:', error);
+        console.error('Error fetching chefs de projet:', error.message, error.stack);
         res.status(500).json({ error: 'Error fetching chefs de projet' });
     }
 };
+
+
 exports.getUserIdByName = async (req, res) => {
     const { firstName, lastName } = req.params;
 

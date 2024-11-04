@@ -4,7 +4,21 @@ const { pool } = require('../config/database');
 
 exports.getAllProjets = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM "Projets"');
+        const result = await pool.query(`
+            SELECT 
+                p.id, 
+                p.nom, 
+                p.date_debut, 
+                p.date_fin, 
+                p.budget, 
+                p.etat, 
+                p.id_chef, 
+                u.nom AS manager_nom, 
+                u.prenom AS manager_prenom
+            FROM "Projets" p
+            JOIN "Utilisateurs" u ON p.id_chef = u.id
+        `);
+
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Query error:', err); 

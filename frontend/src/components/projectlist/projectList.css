@@ -61,11 +61,11 @@
   color: orange;
 }
 
-.add-project-btn,.view-all-btn:hover {
+.add-project-btn,.view-all-btn, .details-button:hover {
   background-color: #357ABD;
 }
 
-.view-all-btn , .add-project-btn {
+.view-all-btn , .add-project-btn, .details-button {
   margin-left: 10px;
   padding: 10px 15px;
   border: none;

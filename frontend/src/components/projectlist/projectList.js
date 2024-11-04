@@ -71,7 +71,7 @@ const ProjectList = () => {
             <p className={project.etat === 'Ongoing' ? 'status ongoing' : 'status'}>
               {project.etat}
             </p>
-            <p>{project.manager}</p>
+            <p>{project.manager_nom} {project.manager_prenom}</p>
             <p>{new Date(project.date_fin).toLocaleString('fr-FR', { 
               year: 'numeric', month: 'long', day: 'numeric', 
               hour: '2-digit', minute: '2-digit' 

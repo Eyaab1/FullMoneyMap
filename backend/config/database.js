@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'postgres',
+    database: 'moneymap',
     password: 'admin',
     port: 5432,
 });
@@ -13,7 +13,7 @@ async function connectDB() {
         pool = new Pool({
             user: 'postgres',
             host: 'localhost',
-            database: 'postgres', 
+            database: 'moneymap', 
             password: 'admin',
             port: 5432,
         });
