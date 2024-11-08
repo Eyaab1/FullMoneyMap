@@ -2,10 +2,13 @@ const express = require('express');
 const { connectDB } = require('./config/database');
 const cors = require('cors');
 const app = express();
+const cookieParser = require('cookie-parser');  // Add this line
+
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());  // Add this middleware
 
 // Import routes
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
@@ -29,7 +32,7 @@ async function startServer() {
     app.use(authRoutes); // Authentication related routes (login/logout)
 
     // Use authentication middleware for routes that require authentication
-    app.use('/api/utilisateurs',authenticate, utilisateurRoutes); // No auth required for this route
+    app.use('/api/utilisateurs', authenticate, utilisateurRoutes); // No auth required for this route
     app.use('/api/projects', authenticate, projetRoutes); // Authentication required for this route
     app.use('/api/transactions', authenticate, transactionRoutes); // Authentication required
     app.use('/api/freelancers', authenticate, freelancerRoutes); // Authentication required
