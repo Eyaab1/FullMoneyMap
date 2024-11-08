@@ -5,6 +5,10 @@ const projetController = require('../controllers/projetController');
 // Get all projects
 router.get('/all', projetController.getAllProjets);
 
+router.get('/projet/:id', projetController.getProjetById);
+
+router.get('/projetWithManager/:id', projetController.getProjetWithManager);
+
 // Add new project
 router.post('/create', projetController.addProjet);
 

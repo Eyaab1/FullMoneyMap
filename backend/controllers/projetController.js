@@ -57,6 +57,21 @@ exports.addProjet = async (req, res) => {
     }
 };
 
+exports.getProjetById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query('SELECT * FROM "Projets" WHERE id = $1', [id]);
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ error: 'Project not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error fetching project by id' });
+    }
+};
 
 exports.getProjetByName = async (req, res) => {
     const { nom } = req.params;
@@ -158,5 +173,40 @@ exports.changeDateFin = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error updating project end date' });
+    }
+};
+
+
+exports.getProjetWithManager = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT 
+                p.id AS project_id,
+                p.nom AS project_name,
+                p.date_debut,
+                p.date_fin,
+                p.budget,
+                p.etat,
+                u.prenom AS manager_prenom,
+                u.nom AS manager_nom
+            FROM 
+                "Projets" p
+            JOIN 
+                "Utilisateurs" u ON p.id_chef = u.id
+            WHERE 
+                p.id = $1`,
+            [id]
+        );
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ error: 'Project not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error fetching project with manager' });
     }
 };
