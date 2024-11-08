@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { pool } = require('../config/database'); // Assuming you use the same pool for DB connection
-const User = require('../models/User');  // Assuming you have a User model or table
+const User = require('../models/Utilisateur');  // Assuming you have a User model or table
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 

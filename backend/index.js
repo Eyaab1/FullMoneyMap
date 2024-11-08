@@ -26,7 +26,7 @@ async function startServer() {
     app.locals.pool = pool; // Store pool in app locals for easy access in routes
 
     // Authentication routes
-    app.use('/api/auth', authRoutes); // Authentication related routes (login/logout)
+    app.use(authRoutes); // Authentication related routes (login/logout)
 
     // Use authentication middleware for routes that require authentication
     app.use('/api/utilisateurs',authenticate, utilisateurRoutes); // No auth required for this route
