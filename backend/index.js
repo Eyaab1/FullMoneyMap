@@ -17,7 +17,7 @@ const authenticateJWT = (req, res, next) => {
       if (err) {
         return res.sendStatus(403);
       }
-      req.user = user; 
+      req.user = user;
       next();
     });
   } else {
@@ -33,11 +33,13 @@ async function startServer() {
       const projetRoutes = require('./routes/projetRoutes');
       const transactionRoutes = require('./routes/transactionRoutes');
       const freelancerRoutes = require('./routes/freelancerRoutes');
- 
-      app.use('/api/utilisateurs', utilisateurRoutes); 
+      const salaireRoutes = require('./routes/salaireRoutes'); 
+
+      app.use('/api/utilisateurs',authenticateJWT, utilisateurRoutes); 
       app.use('/api/projects', authenticateJWT, projetRoutes); 
       app.use('/api/transactions', authenticateJWT, transactionRoutes);
-      app.use('/freelancers', freelancerRoutes);
+      app.use('/api/freelancers',authenticateJWT, freelancerRoutes);
+      app.use('/api/salaires',authenticateJWT,salaireRoutes);
 
       app.listen(PORT, () => {
           console.log(`Server is running on port ${PORT}`);

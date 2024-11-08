@@ -11,6 +11,8 @@ router.post('/create', projetController.addProjet);
 // Get project by name
 router.get('/name/:nom', projetController.getProjetByName);
 
+router.get('/projet/:id', projetController.getProjetById);
+
 // Get projects by chef ID
 router.get('/chef/:id_chef', projetController.getProjetsByChef);
 
