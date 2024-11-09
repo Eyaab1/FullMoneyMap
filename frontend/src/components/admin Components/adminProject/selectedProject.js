@@ -52,7 +52,7 @@ const SelectedProject = () => {
         }
   
         try {
-          const response = await axios.get(`http://localhost:5000/api/freelancers/freelancersProject/${id}`, {
+          const response = await axios.get(`http://localhost:5000/api/freelancers/projects/${id}`, {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
@@ -116,9 +116,9 @@ const SelectedProject = () => {
      <h3>Team Members</h3>
      {freelancer.map((freelancer, index) => (
         <div key={index} className="team-member">
-         <span>{freelancer.name}</span>
-         <span>{freelancer.role}</span>
-         <span>{freelancer.salary}</span>
+         <span>{freelancer.prenom} {freelancer.nom}</span>
+         <span>{freelancer.specialty}</span>
+         <span>{freelancer.salaire}</span>
        </div>
      ))}
    </div>

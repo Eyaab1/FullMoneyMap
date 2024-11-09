@@ -10,6 +10,7 @@ import AddTransaction from './components/addTransaction/addTransaction';
 
 import DashboardA from './components/admin Components/dashboardA/dashboardA';
 import SelectedProject from './components/admin Components/adminProject/selectedProject';
+import Financiers from './components/admin Components/financiers/financiers'
 
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
@@ -52,7 +53,7 @@ const App = () => {
 
   const login = async (credentials, navigate) => {
     try {
-      const response = await fetch('http://localhost:5000/api/utilisateurs/login', {
+      const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,6 +107,7 @@ const App = () => {
           {/*admin routeq*/}          
           <Route path='/admin' element={<DashboardA/>}/>
           <Route path="/project/:id" element={<SelectedProject /> } />
+          <Route path="/financial" element={<Financiers /> } />
           
         </Routes>
       </div>

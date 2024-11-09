@@ -58,15 +58,16 @@ exports.getFreelancerSalary = async (req, res) => {
 };
 
 // Get freelancers by project ID
+// Get freelancers by project ID
 exports.getFreelancersByProject = async (req, res) => {
     const { id_projet } = req.params; // Assuming project ID is passed as a route parameter
 
     try {
         const result = await pool.query(`
-            SELECT F.*, S."salaire"
+            SELECT F.nom, F.prenom, F.specialty, S.salaire AS salary
             FROM "Freelancers" F
-            JOIN "Salaires" S ON F."id" = S."id_freelancer"
-            WHERE S."id_projet" = $1;
+            JOIN "Salaires" S ON F.id = S.id_freelancer
+            WHERE S.id_projet = $1;
         `, [id_projet]);
 
         if (result.rows.length === 0) {
