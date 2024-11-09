@@ -1,0 +1,10 @@
+.remove-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: black;
+    transition: color 0.3s ease;
+}
+
+.remove-icon:hover {
+    color: red;
+}

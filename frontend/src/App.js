@@ -3,11 +3,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import Sidebar from './components/sidebar/sideBar';
 import Dashboard from './components/dashboard/dashboard';
 import ProjectList from './components/projectlist/projectList';
-import SelectedProject from './components/projectlist/selectedProject';
 import Login from './components/login/login';
 import AddProject from './components/projectlist/addProject';
 import TransactionHistory from './components/transactionHistory/transactionHistory';
 import AddTransaction from './components/addTransaction/addTransaction';
+
+import DashboardA from './components/admin Components/dashboardA/dashboardA';
+import SelectedProject from './components/admin Components/adminProject/selectedProject';
+import Financiers from './components/admin Components/financiers/financiers'
+
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
 import { PrimeReactProvider } from 'primereact/api';
@@ -48,7 +52,7 @@ const App = () => {
 
   const login = async (credentials, navigate) => {
     try {
-      const response = await fetch('http://localhost:5000/api/utilisateurs/login', {
+      const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +91,7 @@ const App = () => {
   };
   return (
     <div className="App">
-      {isAuthenticated && location.pathname !== '/login' && <Sidebar logout={logout} />}
+      {isAuthenticated && location.pathname !== '/login' &&   location.pathname !== '/admin'&& <Sidebar logout={logout} />}
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
@@ -96,9 +100,13 @@ const App = () => {
           <Route path="/transactions" element={isAuthenticated ? <TransactionHistory /> : <Navigate to="/login" />} />
           <Route path="/addTransaction" element={isAuthenticated ? <AddTransaction /> : <Navigate to="/login" />} />
           <Route path="/projects" element={isAuthenticated ? <ProjectList /> : <Navigate to="/login" />} />
-          <Route path="/project" element={isAuthenticated ? <SelectedProject /> : <Navigate to="/login" />} />
           <Route path="/addProject" element={isAuthenticated ? <AddProject /> : <Navigate to="/login" />} />
           
+          
+          {/*admin routeq*/}          
+          <Route path='/admin' element={<DashboardA/>}/>
+          <Route path="/project/:id" element={<SelectedProject /> } />
+          <Route path="/financial" element={<Financiers /> } />
           
         </Routes>
       </div>

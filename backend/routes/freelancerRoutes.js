@@ -3,7 +3,7 @@ const router = express.Router();
 const freelancerController = require('../controllers/freelancerController');
 
 // Route to get all freelancers
-router.get('/', freelancerController.getAllFreelancers);
+router.get('/all', freelancerController.getAllFreelancers);
 
 // Route to add a new freelancer
 router.post('/', freelancerController.addFreelancer);
