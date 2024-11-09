@@ -62,7 +62,7 @@ async function createTables(pool) {
             "prenom" VARCHAR(255) NOT NULL,
             "email" VARCHAR(255) NOT NULL UNIQUE,
             "password" VARCHAR(255) NOT NULL,
-            "role" VARCHAR(50) NOT NULL CHECK (role IN ('financier', 'chef de projet'))
+            "role" VARCHAR(50) NOT NULL CHECK (role IN ('financier', 'chef de projet', 'administrateur'))
         );
     `);
     console.log('Table "Utilisateurs" created successfully.');
