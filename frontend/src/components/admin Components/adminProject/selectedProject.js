@@ -7,6 +7,7 @@ import axios from 'axios';
 const SelectedProject = () => {
   const { id } = useParams(); 
   const [project, setProject] = useState([]);
+  const [freelancer, setFreelancer] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,13 +41,41 @@ const SelectedProject = () => {
 
     fetchProject();}, [id]);
 
+    useEffect(() => {
+      const fetchFreelancers = async () => {
+        const token = localStorage.getItem('token'); 
+  
+        if (!token) {
+          setError('Unauthorized access - No token found');
+          setLoading(false);
+          return;
+        }
+  
+        try {
+          const response = await axios.get(`http://localhost:5000/api/freelancers/freelancersProject/${id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setFreelancer(response.data);
+          console.log(response.data)
+          setLoading(false);
+        } catch (err) {
+          setError('Failed to fetch freelancers');
+          setLoading(false);
+        }
+      };
+  
+      fetchFreelancers();}, [id]);
+
   return (
     <div className="selected-project">
       {/* Project Header */}
       <div className="project-header">
         <div className="project-name">
           <h2>Project's Name</h2>
-          <h3>{project.nom}</h3>  
+          <h3>{project.project_name}</h3>  
         </div>
         <div className="project-budget">
           <h2>Budget</h2>
@@ -59,7 +88,9 @@ const SelectedProject = () => {
         <div className="details-left">
           <div className="detail-item">
             <label>Project Manager</label>
-            {/* <p>{project.manager}</p> */}
+            <p>
+            {project.manager_nom} {project.manager_prenom}
+            </p>
           </div>
           <div className="detail-item">
   <label>Start Date</label>
@@ -81,16 +112,16 @@ const SelectedProject = () => {
         </div>
       </div>
 
-    {/* //   <div className="team-details">
-    //     <h3>Team Members</h3>
-    //     {project.team.map((member, index) => ( */}
-    {/* //       <div key={index} className="team-member">
-    //         <span>{member.name}</span>
-    //         <span>{member.role}</span>
-    //         <span>{member.salary}</span>
-    //       </div>
-    //     ))}
-    //   </div> */}
+   <div className="team-details">
+     <h3>Team Members</h3>
+     {freelancer.map((freelancer, index) => (
+        <div key={index} className="team-member">
+         <span>{freelancer.name}</span>
+         <span>{freelancer.role}</span>
+         <span>{freelancer.salary}</span>
+       </div>
+     ))}
+   </div>
 
      <button className="modify-button">Modify</button>
     </div>

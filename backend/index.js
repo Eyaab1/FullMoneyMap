@@ -37,7 +37,7 @@ async function startServer() {
       app.use('/api/utilisateurs', utilisateurRoutes); 
       app.use('/api/projects', authenticateJWT, projetRoutes); 
       app.use('/api/transactions', authenticateJWT, transactionRoutes);
-      app.use('/freelancers', freelancerRoutes);
+      app.use('/api/freelancers', freelancerRoutes);
 
       app.listen(PORT, () => {
           console.log(`Server is running on port ${PORT}`);
