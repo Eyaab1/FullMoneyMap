@@ -134,37 +134,23 @@ exports.getProjetEtat = async (req, res) => {
     }
 };
 
-
-exports.changeProjetEtat = async (req, res) => {
+exports.updateProjet = async (req, res) => {
     const { id } = req.params;
-    const { etat } = req.body;
+    const { nom, date_debut, date_fin, budget, etat, id_chef } = req.body;
 
-    try {
-        const result = await pool.query(
-            'UPDATE "Projets" SET etat = $1 WHERE id = $2 RETURNING *',
-            [etat, id]
-        );
-        if (result.rows.length > 0) {
-            res.status(200).json(result.rows[0]);
-        } else {
-            res.status(404).json({ error: 'Project not found' });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Error updating project status' });
+    // Check for required fields (update as needed)
+    if (!nom || !date_debut || !date_fin || !budget || !etat || !id_chef) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
-};
-
-
-exports.changeDateFin = async (req, res) => {
-    const { id } = req.params;
-    const { date_fin } = req.body;
 
     try {
         const result = await pool.query(
-            'UPDATE "Projets" SET date_fin = $1 WHERE id = $2 RETURNING *',
-            [date_fin, id]
+            `UPDATE "Projets" 
+            SET nom = $1, date_debut = $2, date_fin = $3, budget = $4, etat = $5, id_chef = $6 
+            WHERE id = $7 RETURNING *`,
+            [nom, date_debut, date_fin, budget, etat, id_chef, id]
         );
+
         if (result.rows.length > 0) {
             res.status(200).json(result.rows[0]);
         } else {
@@ -172,7 +158,7 @@ exports.changeDateFin = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Error updating project end date' });
+        res.status(500).json({ error: 'Error updating project' });
     }
 };
 

@@ -23,10 +23,6 @@ router.get('/chef/:id_chef', projetController.getProjetsByChef);
 // Get project status (etat)
 router.get('/etat/:id', projetController.getProjetEtat);
 
-// Change project status (etat)
-router.put('/etat/:id', projetController.changeProjetEtat);
-
-// Change project end date (date_fin)
-router.put('/date-fin/:id', projetController.changeDateFin);
+router.put('/projets/:id', projetController.updateProjet);
 
 module.exports = router;
