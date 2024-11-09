@@ -10,11 +10,10 @@ import TransactionHistory from './components/transactionHistory/transactionHisto
 import AddTransaction from './components/addTransaction/addTransaction';
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
-
+import { PrimeReactProvider } from 'primereact/api';
 const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
@@ -109,8 +108,15 @@ const App = () => {
 
 const AppWrapper = () => (
   <Router>
-    <App />
+   
+   
+        
+            <App />
+        
+    
+    
   </Router>
+
 );
 
 export default AppWrapper;

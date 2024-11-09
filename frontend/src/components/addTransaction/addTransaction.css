@@ -65,4 +65,27 @@
   .add-button:hover {
     background-color: #3a2fa5;
   }
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    grid-column: span 2;
+    width: 100%;
+  } 
+  .cancel-button{
+    padding: 12px 30px;
+    background-color: rgb(228, 42, 42);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .cancel-button:hover {
+    background-color: #9b0000;
+  }
+  .add-button:hover{
+    background-color: #0056b3;
+  }
   

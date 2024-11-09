@@ -2,8 +2,8 @@ import React, { useState ,useEffect } from 'react';
 
 import './addTransaction.css';
 
-
-
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 const AddTransaction = () => {
@@ -16,15 +16,16 @@ const AddTransaction = () => {
       projectName: '', 
       category: '' 
     });
+    const [projects, setProjects] = useState([]);
   
     useEffect(() => {
      
       const user = JSON.parse(localStorage.getItem('user'));
       
-      if (user && user.id) {
+      if (user && user.prenom) {
         setFormData((prevState) => ({
           ...prevState,
-          addedBy: user.id 
+          addedBy: user.prenom 
         }));
       }
     }, []);
@@ -35,7 +36,26 @@ const AddTransaction = () => {
         [e.target.name]: e.target.value,
       });
     };
-  
+   
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await axios.get('http://localhost:5000/api/projects/all', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProjects(response.data);
+    
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchProjects();
+  }, []);
     const handleSubmit = async (e) => {
       e.preventDefault();
   
@@ -99,7 +119,7 @@ const AddTransaction = () => {
                 name="addedBy"
                 value={formData.addedBy}
                 onChange={handleChange}
-                placeholder="Enter your name"
+                placeholder="Enter your name" disabled
               />
             </div>
   
@@ -110,7 +130,7 @@ const AddTransaction = () => {
                 value={formData.type}
                 onChange={handleChange}
               >
-                <option value="">Select a type</option>
+                <option value="" disabled>Select a type</option>
                 <option value="Income">Income</option>
                 <option value="Outcome">Outcome</option>
               </select>
@@ -149,17 +169,22 @@ const AddTransaction = () => {
               />
             </div>
             {formData.type === 'Income' && (
-              <div className="form-group">
-                <label>Project Name</label>
-                <input
-                  type="text"
-                  name="projectName"
-                  value={formData.projectName}
-                  onChange={handleChange}
-                  placeholder="Enter project name"
-                />
-              </div>
-            )}
+  <div className="form-group">
+    <label>Project Name</label>
+    <select
+      name="projectName"
+      value={formData.projectName}
+      onChange={handleChange}
+    >
+      <option value="" disabled >Select a project</option>
+      {projects.map((projet) => (
+        <option key={projet.id} value={projet.nom}>
+          {projet.nom}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
              {formData.type === 'Outcome' && (
             <div className="form-group">
               <label>Category</label>
@@ -188,8 +213,10 @@ const AddTransaction = () => {
             </div>
           )}
 
-  
-            <button type="submit" className="add-button">ADD</button>
+<div className="form-buttons">
+                        <Link to="/transactions"><button type="button" className="cancel-button">CANCEL</button></Link>
+                        <button type="submit" className="add-button">ADD</button>
+                    </div>
           </form>
         </div>
       </div>

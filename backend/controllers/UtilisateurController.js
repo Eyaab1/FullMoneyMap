@@ -148,9 +148,6 @@ exports.getUserByEmailAndPassword = async (req, res) => {
             return res.status(401).json({ message: 'Incorrect password' });
         }
         const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' });
-
-        
-       
         res.json({
             user,
             token,
