@@ -212,7 +212,9 @@ const Dashboard = () => {
           <div className={styles.cardHeader}>
             <span>Project Managers</span>
             <div className={styles.headerButtons}>
+            <Link to={`/managers`}>
               <button className={styles.viewAllButton}>View All</button>
+              </Link>
             </div>
           </div>
 
@@ -236,7 +238,9 @@ const Dashboard = () => {
           <div className={styles.cardHeader}>
             <span>Freelancers</span>
             <div className={styles.headerButtons}>
+            <Link to={`/freelancers`}>
               <button className={styles.viewAllButton}>View All</button>
+              </Link>
             </div>
           </div>
 

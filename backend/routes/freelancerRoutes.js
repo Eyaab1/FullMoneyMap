@@ -6,7 +6,7 @@ const freelancerController = require('../controllers/freelancerController');
 router.get('/all', freelancerController.getAllFreelancers);
 
 // Route to add a new freelancer
-router.post('/', freelancerController.addFreelancer);
+router.post('/add', freelancerController.addFreelancer);
 
 // Route to get freelancer salary by freelancer ID
 router.get('/salary/:id_freelancer', freelancerController.getFreelancerSalary);

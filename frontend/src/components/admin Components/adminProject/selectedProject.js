@@ -93,9 +93,9 @@ const SelectedProject = () => {
             </p>
           </div>
           <div className="detail-item">
-  <label>Start Date</label>
-  <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
-</div>
+            <label>Start Date</label>
+            <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
+          </div>
         </div>
 
         <div className="details-right">
@@ -105,20 +105,25 @@ const SelectedProject = () => {
             
           </div>
           <div className="detail-item">
-  <label>Deadline</label>
-  <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
-</div>
+            <label>Deadline</label>
+            <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
+          </div>
 
         </div>
       </div>
 
    <div className="team-details">
      <h3>Team Members</h3>
+     <div className='team-member'>
+     <label>Full name</label>
+     <label>Specialty</label>
+     <label>Salary</label>
+     </div>
      {freelancer.map((freelancer, index) => (
         <div key={index} className="team-member">
          <span>{freelancer.prenom} {freelancer.nom}</span>
          <span>{freelancer.specialty}</span>
-         <span>{freelancer.salaire}</span>
+         <span>{freelancer.salaire}DT</span>
        </div>
      ))}
    </div>

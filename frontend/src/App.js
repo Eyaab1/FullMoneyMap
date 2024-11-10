@@ -11,6 +11,8 @@ import AddTransaction from './components/addTransaction/addTransaction';
 import DashboardA from './components/admin Components/dashboardA/dashboardA';
 import SelectedProject from './components/admin Components/adminProject/selectedProject';
 import Financiers from './components/admin Components/financiers/financiers'
+import Managers from './components/admin Components/managers/managers'
+import Freelancers from './components/admin Components/freelancers/freelancers'
 
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
@@ -92,7 +94,10 @@ const App = () => {
   };
   return (
     <div className="App">
-      {isAuthenticated && location.pathname !== '/login' &&   location.pathname !== '/admin'&& <Sidebar logout={logout} />}
+      {isAuthenticated && location.pathname == '/dashboard' && location.pathname == '/transactions'
+       && location.pathname !== '/addTransaction' &&   location.pathname !== '/projects'
+       && location.pathname !== '/addProject'
+       && <Sidebar logout={logout} />}
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
@@ -108,6 +113,8 @@ const App = () => {
           <Route path='/admin' element={<DashboardA/>}/>
           <Route path="/project/:id" element={<SelectedProject /> } />
           <Route path="/financial" element={<Financiers /> } />
+          <Route path="/managers" element={<Managers /> } />
+          <Route path="/freelancers" element={<Freelancers/> } />
           
         </Routes>
       </div>
