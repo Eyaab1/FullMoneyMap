@@ -1,24 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './deadlines.css';
 
 const UpcomingDeadlines = () => {
-  const deadlines = [
-    { title: 'Innovo', date: '29 Oct', time: '2:30pm', person: 'Abdellaoui Eya' },
-    { title: 'Saturn', date: '1 Nov', time: '3:30pm', person: 'Anis Arfa' }
-  ];
+  const [deadlines, setDeadlines] = useState([]);
+
+  useEffect(() => {
+    const fetchDeadlines = async () => {
+      try {
+        const response = await fetch('/api/projects/upcoming-deadlines?days=3');
+        const data = await response.json();
+        setDeadlines(data);
+      } catch (error) {
+        console.error('Error fetching deadlines:', error);
+      }
+    };
+
+    fetchDeadlines();
+    const interval = setInterval(fetchDeadlines, 24 * 60 * 60 * 1000); // Fetch daily
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="upcoming-deadlines">
-      <h2>Upcoming deadlines</h2>
+      <h2>Upcoming Deadlines</h2>
       <ul>
-        {deadlines.map((deadline, index) => (
-          <li key={index} className="deadline-item">
-            <div className="deadline-title">{deadline.title}</div>
+        {deadlines.map((deadline) => (
+          <li key={deadline.id} className="deadline-item">
+            <div className="deadline-title">{deadline.nom}</div>
             <div className="deadline-details">
-              <span className="deadline-date">{deadline.date}</span>
-              <span className="deadline-time">{deadline.time}</span>
+              <span className="deadline-date">{new Date(deadline.date_fin).toLocaleDateString()}</span>
+              <span className="deadline-time">{new Date(deadline.date_fin).toLocaleTimeString()}</span>
             </div>
-            <div className="deadline-person">{deadline.person}</div>
+            <div className="deadline-person">
+              {deadline.manager_nom} {deadline.manager_prenom}
+            </div>
           </li>
         ))}
       </ul>

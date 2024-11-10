@@ -38,7 +38,7 @@ exports.addDepense = async (req, res) => {
 
         const transactionResult = await client.query(
             `INSERT INTO "Transactions" (amount, date, description, "addedBy", type) 
-            VALUES ($1, $2, $3, $4, 'revenu') RETURNING *`,
+            VALUES ($1, $2, $3, $4, 'depense') RETURNING *`,
             [amount, date, description, addedBy]
         ); 
         

@@ -196,3 +196,26 @@ exports.getProjetWithManager = async (req, res) => {
         res.status(500).json({ error: 'Error fetching project with manager' });
     }
 };
+exports.getUpcomingDeadlines = async (req, res) => {
+    const daysAhead = req.query.days || 3;
+
+    try {
+        const result = await pool.query(`
+            SELECT 
+                p.id, 
+                p.nom, 
+                p.date_fin, 
+                u.nom AS manager_nom, 
+                u.prenom AS manager_prenom
+            FROM "Projets" p
+            JOIN "Utilisateurs" u ON p.id_chef = u.id
+            WHERE p.date_fin BETWEEN NOW() AND NOW() + INTERVAL '${daysAhead} days'
+            ORDER BY p.date_fin ASC
+        `);
+
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Query error:', err); 
+        res.status(500).json({ error: 'Error fetching upcoming deadlines' });
+    }
+};

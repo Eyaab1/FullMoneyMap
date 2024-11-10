@@ -91,19 +91,19 @@ const Dashboard = () => {
         <StatsCard 
           title="Total Revenue" 
           amount={`${totalRevenue.toFixed(2)} dt`} 
-          percentage={15} 
+          // percentage={15} 
           color="green" 
         />
         <StatsCard 
           title="Total Expenses" 
           amount={`${totalExpenses.toFixed(2)} dt`} 
-          percentage={-5} 
+          // percentage={-5} 
           color="red" 
         />
         <StatsCard 
-          title="Solde (Balance)" 
+          title="Solde" 
           amount={`${solde.toFixed(2)} dt`} 
-          percentage={10} 
+          // percentage={10} 
           color={solde >= 0 ? "blue" : "red"}  
         />
       </div>
