@@ -58,7 +58,6 @@ exports.getFreelancerSalary = async (req, res) => {
 };
 
 // Get freelancers by project ID
-// Get freelancers by project ID
 exports.getFreelancersByProject = async (req, res) => {
     const { id_projet } = req.params; // Assuming project ID is passed as a route parameter
 
@@ -78,5 +77,35 @@ exports.getFreelancersByProject = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error fetching freelancers by project' });
+    }
+};
+
+exports.deleteFreelancer = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await pool.query('BEGIN');
+
+        await pool.query(
+            'DELETE FROM "Salaires" WHERE id_freelancer = $1',
+            [id]
+        );
+
+        const result = await pool.query(
+            'DELETE FROM "Freelancers" WHERE id = $1 RETURNING *',
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            await pool.query('ROLLBACK');
+            return res.status(404).json({ message: 'Freelancer not found' });
+        }
+
+        await pool.query('COMMIT');
+        res.status(200).json({ message: 'Freelancer and associated salaries deleted successfully' });
+    } catch (error) {
+        await pool.query('ROLLBACK');
+        console.error('Error deleting freelancer:', error);
+        res.status(500).json({ error: 'Error deleting freelancer and associated salaries' });
     }
 };
