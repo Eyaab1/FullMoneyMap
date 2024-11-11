@@ -138,9 +138,9 @@ const Managers = () => {
           <div key={manager.id} className="table-row">
             <p>{manager.prenom} {manager.nom}</p>
             <p>{manager.email}</p>
-            {/* <p className="remove-icon" onClick={() => removeManager(manager.id)}>
+            <p className="remove-icon" onClick={() => removeManager(manager.id)}>
               x
-            </p> */}
+            </p> 
           </div>
         ))}
       </div>
