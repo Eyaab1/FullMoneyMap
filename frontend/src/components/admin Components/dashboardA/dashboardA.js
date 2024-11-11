@@ -139,8 +139,9 @@ const Dashboard = () => {
           <img src={adminPhoto} alt="Admin" className={styles.adminPhoto} />
         </div>
       </div>
-
+      
       {/* Project List */}
+      <div className={styles.allContainer}>
       <div className={styles.projectContainer}>
         <div className={styles.projectHeader}>
           <h3>Project List</h3>
@@ -179,18 +180,19 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      <div className={styles.others}>
 
-      {/* Financiers Card */}
-      <div className={styles.cardsContainer}>
-        <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <span>Financiers</span>
-            <div className={styles.headerButtons}>
-              <Link to={`/financial`}>
-                <button className={styles.viewAllButton}>View All</button>
-              </Link>
-            </div>
-          </div>
+          {/* Financiers Card */}
+          <div className={styles.cardsContainer}>
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <span>Financiers</span>
+                <div className={styles.headerButtons}>
+                  <Link to={`/financial`}>
+                    <button className={styles.viewAllButton}>View All</button>
+                  </Link>
+                </div>
+              </div>
 
           <div className={styles.cardText}>
             {financiers.length > 0 ? (
@@ -256,6 +258,8 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );

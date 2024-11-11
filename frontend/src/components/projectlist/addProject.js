@@ -17,9 +17,20 @@ const AddProject = () => {
 
     // Fetch chefs de projet on component mount
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setError('Unauthorized access - No token found');
+          return;
+        }
         const fetchChefs = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/utilisateurs/all?role=chef de projet');
+                const response = await fetch('http://localhost:5000/api/utilisateurs/all?role=chef de projet',
+                    {
+                        headers: {
+                          'Authorization': `Bearer ${token}`, // Include the token in the header
+                        }
+                      }
+                );
                 const data = await response.json();
                 if (response.ok) {
                     setChefs(data);

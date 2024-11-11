@@ -16,14 +16,15 @@ import Freelancers from './components/admin Components/freelancers/freelancers'
 
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
-import { PrimeReactProvider } from 'primereact/api';
+
 const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const pathsWithSidebar = ['/dashboard', '/transactions','/projects'];
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
-
+    
     console.log("Token from localStorage:", token);
     console.log("User from localStorage:", user);
 
@@ -61,13 +62,10 @@ const App = () => {
         },
         body: JSON.stringify(credentials),
       });
-  
       console.log('Response status:', response.status);
-  
       if (response.ok) {
         const data = await response.json();
         const { token, user } = data;
-  
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         setIsAuthenticated(true); 
@@ -82,7 +80,6 @@ const App = () => {
       alert('An error occurred. Please try again later.');
     }
   };
-  
 
   const logout = () => {
    
@@ -93,10 +90,8 @@ const App = () => {
   };
   return (
     <div className="App">
-      {isAuthenticated && location.pathname == '/dashboard' && location.pathname == '/transactions'
-       && location.pathname !== '/addTransaction' &&   location.pathname !== '/projects'
-       && location.pathname !== '/addProject'
-       && <Sidebar logout={logout} />}
+     {isAuthenticated && pathsWithSidebar.includes(location.pathname) && <Sidebar logout={logout} />}
+
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
