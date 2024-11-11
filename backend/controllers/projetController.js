@@ -34,7 +34,7 @@ exports.addProjet = async (req, res) => {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-  
+
     if (typeof budget !== 'number') {
         return res.status(400).json({ error: 'Budget must be a number' });
     }
@@ -56,6 +56,53 @@ exports.addProjet = async (req, res) => {
         res.status(500).json({ error: 'Error adding new project' });
     }
 };
+
+// exports.addProjet = async (req, res) => {
+//     const { nom, date_debut, date_fin, budget, etat, id_chef } = req.body;
+
+//     if (!nom || !date_debut || !date_fin || !budget || !etat || !id_chef) {
+//         return res.status(400).json({ error: 'All fields are required' });
+//     }
+
+//     if (typeof budget !== 'number') {
+//         return res.status(400).json({ error: 'Budget must be a number' });
+//     }
+
+//     try {
+//         // Get total revenues and expenses for the chef (id_chef)
+//         const result = await pool.query(`
+//             SELECT COALESCE(SUM(R.montant), 0) - COALESCE(SUM(D.montant), 0) AS total_balance
+//             FROM "Revenues" R
+//             LEFT JOIN "Dépenses" D ON R.id_projet = D.id_projet
+//             WHERE R.id_chef = $1
+//         `, [id_chef]);
+
+//         const totalBalance = result.rows[0].total_balance;
+
+//         // Check if the budget is greater than the total balance of revenues minus expenses
+//         if (budget > totalBalance) {
+//             return res.status(400).json({ error: 'Budget exceeds the available balance of revenues minus expenses' });
+//         }
+
+//         // Insert the new project
+//         const insertResult = await pool.query(
+//             `INSERT INTO "Projets" (nom, date_debut, date_fin, budget, etat, id_chef) 
+//             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+//             [nom, date_debut, date_fin, budget, etat, id_chef]
+//         );
+
+//         res.status(201).json(insertResult.rows[0]);
+//     } catch (err) {
+//         console.error(err);
+
+//         if (err.code === '23505') { 
+//             return res.status(409).json({ error: 'Project already exists' });
+//         }
+
+//         res.status(500).json({ error: 'Error adding new project' });
+//     }
+// };
+
 
 exports.getProjetById = async (req, res) => {
     const { id } = req.params;

@@ -3,6 +3,8 @@
 const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
 const bcrypt = require('bcrypt'); // Library to hash passwords
 const jwt = require('jsonwebtoken');
+// Load environment variables from the .env file
+require('dotenv').config();
 
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
