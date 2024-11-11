@@ -34,10 +34,22 @@ const TransactionHistory = () => {
         });
 
         const transactionsWithNames = await Promise.all(response.data.map(async (transaction) => {
-          const userResponse = await axios.get(`http://localhost:5000/api/utilisateurs/${transaction.addedBy}`);
-          return { ...transaction, addedByName: userResponse.data.nom }; 
+          try {
+            // Include the token in the request header for fetching user details
+            const userResponse = await axios.get(`http://localhost:5000/api/utilisateurs/${transaction.addedBy}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`, // Include the token in the header
+              }
+            });
+        
+            // Return the transaction with the added user's name
+            return { ...transaction, addedByName: userResponse.data.nom }; 
+          } catch (err) {
+            console.error('Error fetching user details:', err);
+            return { ...transaction, addedByName: 'Unknown' }; // Fallback if user details can't be fetched
+          }
         }));
-
+        
         setTransactions(transactionsWithNames);   
         setLoading(false);
       } catch (err) {

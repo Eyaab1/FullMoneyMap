@@ -51,8 +51,9 @@
 }
 
 .content {
+  margin: 0;
   flex: 1;
-  padding: 20px;
+  padding: 0px;
 }
 
 .stats-section {

@@ -40,6 +40,7 @@ const AddTransaction = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       const token = localStorage.getItem('token');
+      
 
       try {
         const response = await axios.get('http://localhost:5000/api/projects/all', {
@@ -56,53 +57,65 @@ const AddTransaction = () => {
 
     fetchProjects();
   }, []);
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-      const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
   
-      const url = formData.type === 'Income' 
-          ? 'http://localhost:5000/api/transactions/revenu' 
-          : 'http://localhost:5000/api/transactions/depense';
+    if (!user) {
+      console.error('User not found in localStorage');
+      return;
+    }
   
-      const payload = {
-          amount: formData.amount,
-          date: formData.date,
-          description: formData.description,
-          addedBy: formData.addedBy,
-          ...(formData.type === 'Income' 
-              ? { id_projet: formData.projectName } 
-              : { category: formData.category })
-      };
+    // Find the project ID based on the project name
+    const project = projects.find((proj) => proj.nom === formData.projectName);
+    if (!project) {
+      console.error('Project not found');
+      return;
+    }
   
-      try {
-          const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`, 
-              },
-              body: JSON.stringify(payload),
-          });
+    const url = formData.type === 'Income' 
+      ? 'http://localhost:5000/api/transactions/revenu' 
+      : 'http://localhost:5000/api/transactions/depense';
   
-          if (response.ok) {
-              const data = await response.json();
-              
-              console.log('Transaction added:', data);
-             
-          } else {
-              const contentType = response.headers.get('content-type');
-              if (contentType && contentType.includes('application/json')) {
-                  const errorData = await response.json();
-                  console.error('Error adding transaction:', errorData.error);
-              } else {
-                  console.error('Non-JSON response received:', await response.text());
-              }
-          }
-      } catch (error) {
-          console.error('Error in form submission:', error);
+    const payload = {
+      amount: formData.amount,
+      date: formData.date,
+      description: formData.description,
+      addedBy: user.id, // Use the user's ID
+      ...(formData.type === 'Income' 
+          ? { id_projet: project.id } // Pass the project ID
+          : { category: formData.category })
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, 
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Transaction added:', data);
+      } else {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          console.error('Error adding transaction:', errorData.error);
+        } else {
+          console.error('Non-JSON response received:', await response.text());
+        }
       }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+    }
   };
+  
     
     
   
