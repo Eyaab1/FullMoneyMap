@@ -160,33 +160,6 @@ exports.getUserIdByName = async (req, res) => {
     }
 };
 
-exports.login = async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const { rows } = await pool.query('SELECT * FROM "Utilisateurs" WHERE email = $1', [email]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const user = rows[0];
-
-        
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Incorrect password' });
-        }
-        const token = jwt.sign({ id: user.id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' });
-        res.json({
-            user,
-            token,
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving user', error });
-    }
-};
 
 
 exports.changePassword = async (req, res) => {

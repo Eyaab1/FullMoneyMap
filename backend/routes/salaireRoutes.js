@@ -15,4 +15,6 @@ router.get('/:id_salaire/freelancer', salaireController.getFreelancerFromSalaire
 router.get('/:id_salaire/project', salaireController.getProjectFromSalaire);
 
 router.put('/:id', salaireController.updateSalaire);
+
+router.delete('/:id',salaireController.deleteSalaire);
 module.exports = router;
