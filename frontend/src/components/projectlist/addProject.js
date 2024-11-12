@@ -9,9 +9,12 @@ const AddProject = () => {
         startDate: '',
         deadline: '',
         budget: '',
-        etat: ''
+        etat: '',
+        freelancer: '',
+        salaire: ''
     });
     const [chefs, setChefs] = useState([]);
+    const [freelancers, setFreelancers] = useState([]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
@@ -19,18 +22,16 @@ const AddProject = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-          setError('Unauthorized access - No token found');
-          return;
+            setError('Unauthorized access - No token found');
+            return;
         }
         const fetchChefs = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/utilisateurs/all?role=chef de projet',
-                    {
-                        headers: {
-                          'Authorization': `Bearer ${token}`, 
-                        }
-                      }
-                );
+                const response = await fetch('http://localhost:5000/api/utilisateurs/all?role=chef de projet', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 const data = await response.json();
                 if (response.ok) {
                     setChefs(data);
@@ -39,10 +40,30 @@ const AddProject = () => {
                 }
             } catch (err) {
                 console.error('Error:', err);
-                setError('Network error. chefs');
+                setError('Network error while fetching chefs.');
+            }
+        };
+
+        const fetchFreelancers = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/freelancers/all', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setFreelancers(data);
+                } else {
+                    setError(data.error || 'Error fetching freelancers');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                setError('Network error while fetching freelancers.');
             }
         };
         fetchChefs();
+        fetchFreelancers();
     }, []);
 
     const handleChange = (e) => {
@@ -58,9 +79,8 @@ const AddProject = () => {
         try {
             const response = await fetch('http://localhost:5000/api/projects/create', {
                 method: 'POST',
-                headers: 
-                { 
-                    'Content-Type': 'application/json' ,
+                headers: { 
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
@@ -70,6 +90,8 @@ const AddProject = () => {
                     date_fin: formData.deadline,
                     budget: parseFloat(formData.budget),
                     etat: formData.etat,
+                    freelancer_id: formData.freelancer,
+                    salaire: parseFloat(formData.salaire)
                 }),
             });
 
@@ -82,7 +104,9 @@ const AddProject = () => {
                     startDate: '',
                     deadline: '',
                     budget: '',
-                    etat: ''
+                    etat: '',
+                    freelancer: '',
+                    salaire: ''
                 });
             } else {
                 setError(data.error || 'Error adding project');
@@ -101,7 +125,7 @@ const AddProject = () => {
                 {success && <div className="success-message">{success}</div>}
                 <form onSubmit={handleSubmit} className="add-transaction-form">
                     <div className="form-group">
-                        <label>Project name</label>
+                        <label>Project Name</label>
                         <input
                             type="text"
                             name="name"
@@ -164,6 +188,31 @@ const AddProject = () => {
                             <option value="en cours">En cours</option>
                             <option value="terminé">Terminé</option>
                         </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Freelancer</label>
+                        <select
+                            name="freelancer"
+                            value={formData.freelancer}
+                            onChange={handleChange}
+                        >
+                            <option value="" disabled>Select a freelancer</option>
+                            {freelancers.map((freelancer) => (
+                                <option key={freelancer.id} value={freelancer.id}>
+                                    {freelancer.nom} {freelancer.prenom}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Salary</label>
+                        <input
+                            type="number"
+                            name="salaire"
+                            value={formData.salaire}
+                            onChange={handleChange}
+                            placeholder="Enter salary"
+                        />
                     </div>
                     <div className="form-buttons">
                         <Link to="/projects"><button type="button" className="cancel-button">CANCEL</button></Link>

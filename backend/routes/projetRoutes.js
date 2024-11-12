@@ -25,6 +25,5 @@ router.get('/chef/:id_chef', projetController.getProjetsByChef);
 router.get('/etat/:id', projetController.getProjetEtat);
 
 router.put('/projets/:id', projetController.updateProjet);
-
-
+router.delete('/:id', projetController.deleteProject);
 module.exports = router;

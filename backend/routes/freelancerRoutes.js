@@ -13,5 +13,5 @@ router.get('/salary/:id_freelancer', freelancerController.getFreelancerSalary);
 
 // Route to get freelancers by project ID
 router.get('/projects/:id_projet', freelancerController.getFreelancersByProject);
-
+router.delete('/:id',freelancerController.deleteFreelancer);
 module.exports = router;

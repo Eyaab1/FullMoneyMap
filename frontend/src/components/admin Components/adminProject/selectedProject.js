@@ -3,26 +3,38 @@ import { useParams } from 'react-router-dom';
 import './selectedProject.css';  
 import axios from 'axios';
 
-
 const SelectedProject = () => {
   const { id } = useParams(); 
-  const [project, setProject] = useState([]);
+  const [managers, setManagers] = useState([]);
+  const [project, setProject] = useState({});
   const [freelancer, setFreelancer] = useState([]);
+  const [allFreelancers, setAllFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedProject, setEditedProject] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [showAddFreelancerModal, setShowAddFreelancerModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [filteredFreelancers, setFilteredFreelancers] = useState([]);
+  const [selectedFreelancer, setSelectedFreelancer] = useState('');
+  const [salary, setSalary] = useState('');
 
+  const handleSalaryChange = (e, index) => {
+    const updatedFreelancers = [...freelancer];
+    updatedFreelancers[index].salary = e.target.value;
+    setFreelancer(updatedFreelancers);
+  };
 
-
+  //fetching projects
   useEffect(() => {
     const fetchProject = async () => {
       const token = localStorage.getItem('token'); 
-
       if (!token) {
         setError('Unauthorized access - No token found');
         setLoading(false);
         return;
       }
-
       try {
         const response = await axios.get(`http://localhost:5000/api/projects/projetWithManager/${id}`, {
           headers: {
@@ -31,7 +43,7 @@ const SelectedProject = () => {
           },
         });
         setProject(response.data);
-        console.log(response.data)
+        setEditedProject(response.data);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch projects');
@@ -39,96 +51,336 @@ const SelectedProject = () => {
       }
     };
 
-    fetchProject();}, [id]);
+    fetchProject();
+  }, [id]);
 
-    useEffect(() => {
-      const fetchFreelancers = async () => {
-        const token = localStorage.getItem('token'); 
+
   
-        if (!token) {
-          setError('Unauthorized access - No token found');
-          setLoading(false);
-          return;
-        }
+  // Fetching managers
+  useEffect(() => {
+    const fetchManagers = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get('http://localhost:5000/api/utilisateurs/role/chef%20de%20projet', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Fetched Managers:', response.data); // Log to check fetched data
+        setManagers(response.data);
+      } catch (err) {
+        console.error('Error fetching managers:', err);
+        setError('Failed to fetch managers');
+      } finally {
+        setLoading(false); // Set loading to false after the fetch attempt
+      }
+    };
+    fetchManagers();
+  }, []);
+
+  // Fetch freelancers associated with this project
+  useEffect(() => {
+    const fetchFreelancers = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await axios.get(`http://localhost:5000/api/freelancers/projects/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFreelancer(response.data);
+      } catch (err) {
+        setError('Failed to fetch project freelancers');
+      } finally {
+        setLoading(false);
+      }
+    };
   
-        try {
-          const response = await axios.get(`http://localhost:5000/api/freelancers/projects/${id}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setFreelancer(response.data);
-          console.log(response.data)
-          setLoading(false);
-        } catch (err) {
-          setError('Failed to fetch freelancers');
-          setLoading(false);
-        }
-      };
+    fetchFreelancers();
+  }, [id]);
   
-      fetchFreelancers();}, [id]);
+  // Fetch all freelancers from the database
+  useEffect(() => {
+    const fetchAllFreelancers = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Unauthorized access - No token found');
+        return;
+      }
+      try {
+        const response = await axios.get('http://localhost:5000/api/freelancers/all', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAllFreelancers(response.data);
+      } catch (err) {
+        setError('Failed to fetch all freelancers');
+      }
+    };
+  
+    fetchAllFreelancers();
+  }, []);
+  
+  // Filter freelancers not already working on the project
+  useEffect(() => {
+    // IDs of freelancers already on the project
+    const currentFreelancerIds = freelancer.map(f => f.id);
+    
+    // Filter to include only freelancers not in the project
+    const availableFreelancers = allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
+    setFilteredFreelancers(availableFreelancers);
+  }, [allFreelancers, freelancer]);
+  
+  // Open modal for adding a freelancer
+  const handleShowAddFreelancerModal = () => setShowAddFreelancerModal(true);
+  const handleShowDeleteModal = () => setShowDeleteModal(true);
+  
+  // Add a freelancer to the project
+  const handleAddFreelancer = () => {
+    if (selectedFreelancer && salary) {
+      const newFreelancer = allFreelancers.find(f => f.id === selectedFreelancer);
+      if (newFreelancer) {
+        setFreelancer([...freelancer, { ...newFreelancer, salary }]);
+        setShowAddFreelancerModal(false);
+        setSelectedFreelancer('');
+        setSalary('');
+      }
+    }
+  };
+
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject((prevProject) => ({
+      ...prevProject,
+      [name]: value,
+    }));
+  };
+
+  // Modal functions
+  const openDeleteModal = () => {
+    setShowModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowModal(false);
+  };
+
+  const confirmDelete = () => {
+    alert("Project deleted"); // Replace this with the actual delete logic, e.g., API call to delete project
+    setShowModal(false); // Close modal after deletion
+  };
+
+
+  
 
   return (
     <div className="selected-project">
-      {/* Project Header */}
       <div className="project-header">
         <div className="project-name">
           <h2>Project's Name</h2>
-          <h3>{project.project_name}</h3>  
+          {editMode ? (
+            <input
+              type="text"
+              name="project_name"
+              value={editedProject.project_name}
+              onChange={handleInputChange}
+            />
+          ) : (
+            <p>{project.project_name}</p>
+          )}
         </div>
         <div className="project-budget">
           <h2>Budget</h2>
-          <h3>{project.budget}</h3>
+          {editMode ? (
+            <input
+              type="number"
+              name="budget"
+              value={editedProject.budget}
+              onChange={handleInputChange}
+            />
+          ) : (
+            <p>{project.budget}</p>
+          )}
         </div>
       </div>
 
-      {/* Project Details */}
+      {/* Editable Project Details */}
       <div className="project-details">
         <div className="details-left">
-          <div className="detail-item">
+        <div className="detail-item">
             <label>Project Manager</label>
-            <p>
-            {project.manager_nom} {project.manager_prenom}
-            </p>
+            {editMode ? (
+              <select
+                name="manager_id"
+                value={editedProject.manager_id || ''}
+                onChange={handleInputChange}
+              >
+                {managers.map((manager) => (
+                  <option key={manager.id} value={manager.id}>
+                    {manager.prenom} {manager.nom}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p>{project.manager_nom} {project.manager_prenom}</p> // Display as text when not editing
+            )}
           </div>
           <div className="detail-item">
-            <label>Start Date</label>
-            <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
-          </div>
+  <label>Start Date</label>
+  {editMode ? (
+    <input
+      type="date"
+      name="date_debut"
+      value={editedProject.date_debut ? new Date(editedProject.date_debut).toISOString().split('T')[0] : ''}
+      onChange={handleInputChange}
+    />
+  ) : (
+    <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
+  )}
+</div>
+
         </div>
 
         <div className="details-right">
-          <div className="detail-item"> 
+        <div className="detail-item">
             <label>State</label>
-            <p>{project.etat}</p>
-            
+            {editMode ? (
+              <select
+                name="etat"
+                value={editedProject.etat}
+                onChange={handleInputChange}
+              >
+                <option value="en cours">En cours</option>
+                <option value="terminé">Terminé</option>
+              </select>
+            ) : (
+              <p>{project.etat}</p> // Show the state as text if not in edit mode
+            )}
           </div>
           <div className="detail-item">
-            <label>Deadline</label>
-            <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
-          </div>
+  <label>Deadline</label>
+  {editMode ? (
+    <input
+      type="date"
+      name="date_fin"
+      value={editedProject.date_fin ? new Date(editedProject.date_fin).toISOString().split('T')[0] : ''}
+      onChange={handleInputChange}
+    />
+  ) : (
+    <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
+  )}
+</div>
 
         </div>
       </div>
 
-   <div className="team-details">
-     <h3>Team Members</h3>
-     <div className='team-member'>
-     <label>Full name</label>
-     <label>Specialty</label>
-     <label>Salary</label>
-     </div>
-     {freelancer.map((freelancer, index) => (
-        <div key={index} className="team-member">
-         <span>{freelancer.prenom} {freelancer.nom}</span>
-         <span>{freelancer.specialty}</span>
-         <span>{freelancer.salaire}DT</span>
-       </div>
-     ))}
-   </div>
+      {/* Team Members Section */}
+      <div className="team-details">
+        <div className="team-header">
+          <h3>Team Members</h3>
+          {editMode && (
+            <span className="add-member" onClick={handleShowAddFreelancerModal}>+</span>
+          )}
+        </div>
+        
+        <div className="team-member">
+          <label>Full name</label>
+          <label>Specialty</label>
+          <label>Salary</label>
+        </div>
+        {freelancer.map((freelancer, index) => (
+          <div key={index} className="team-member">
+            <span>{freelancer.prenom} {freelancer.nom}</span>
+            <span>{freelancer.specialty}</span>
+            {editMode ? (
+              <input
+                type="number"
+                name={`salary-${index}`}
+                value={freelancer.salary}
+                onChange={(e) => handleSalaryChange(e, index)}
+                className="salary-input"
+              />
+            ) : (
+              <span>{freelancer.salary} DT</span>
+            )}
+          </div>
+        ))}
+      </div>
 
-     <button className="modify-button">Modify</button>
+      {/* Modal for adding freelancer */}
+      {showAddFreelancerModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Add Freelancer</h3>
+            <select
+  value={selectedFreelancer}
+  onChange={(e) => setSelectedFreelancer(e.target.value)}
+>
+  <option value="">Select Freelancer</option>
+  {filteredFreelancers.map((freelancer) => (
+    <option key={freelancer.id} value={freelancer.id}>
+      {freelancer.prenom} {freelancer.nom}
+    </option>
+  ))}
+  </select>
+
+            <input
+              type="number"
+              placeholder="Enter salary"
+              value={salary}
+              onChange={(e) => setSalary(e.target.value)}
+            />
+            <div className="button-container">
+            <button className="modify-button" onClick={handleAddFreelancer}>Add</button>
+            <button className="modify-button delete-button" onClick={() => setShowAddFreelancerModal(false)}>Cancel</button>
+          </div>
+          </div>
+
+        </div>
+      )}
+
+
+
+      
+      {/* Edit and Delete Buttons */}
+      <div className="button-container">
+        <button className="modify-button" onClick={toggleEditMode}>
+          {editMode ? "Save" : "Edit"}
+        </button>
+        <button className="modify-button delete-button" onClick={openDeleteModal}>
+          Delete
+        </button>
+      </div>
+
+      {/* Delete Modal */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>Are you sure you want to delete this project?</p>
+            <button className="confirm-button" onClick={confirmDelete}>Yes</button>
+            <button className="cancel-button" onClick={closeDeleteModal}>No</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

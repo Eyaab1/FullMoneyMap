@@ -84,20 +84,134 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Adds spacing between the buttons */
+}
+
 .modify-button {
-  display: block;
-  width: 100%;
   padding: 12px;
-  background-color: #5865f2;
-  color: white;
   font-size: 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 20px;
   text-align: center;
+  color: white;
+  flex: 1; /* Ensures buttons take up equal space */
 }
 
 .modify-button:hover {
+  opacity: 0.9; /* Adds subtle hover effect */
+}
+
+.delete-button {
+  background-color: rgb(224, 21, 21); /* Red background for Delete */
+  color: white;
+}
+
+.modify-button:not(.delete-button) {
+  background-color: #5865f2; /* Blue background for Modify */
+}
+
+.modify-button:not(.delete-button):hover {
+  background-color: #4753e6; /* Darker blue on hover */
+}
+
+/* Modal styling */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 6px;
+  width: 300px;
+  text-align: center;
+}
+
+.confirm-button, .cancel-button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.confirm-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #5865f2;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #c0392b;
+}
+
+.cancel-button:hover {
   background-color: #4753e6;
+}
+
+.salary-input {
+  width: 80px; /* Smaller width for the input */
+  padding: 5px; /* Adjust padding to make it compact */
+  font-size: 14px; /* Smaller font size */
+  border: 1px solid #ccc; /* Optional: Styling the border */
+  border-radius: 4px; /* Optional: Slightly rounded corners */
+  text-align: center; /* Centering the text inside the input */
+}
+.team-details {
+  /* Optional: Add padding or margin to space out the content */
+  padding: 10px;
+}
+
+.team-header {
+  display: flex;
+  justify-content: center; /* Center the h3 */
+  align-items: center; /* Vertically center the items */
+  position: relative; /* Allow positioning of the + button */
+  margin-bottom: 10px; /* Space between header and team member rows */
+}
+
+.team-header h3 {
+  margin: 0;
+}
+
+.add-member {
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+  font-size: 24px; /* Adjust size for better visibility */
+  color: #5865f2; /* Make the + icon blue */
+}
+
+.add-member:hover {
+  color: #4753e6; /* Change color on hover */
+}
+
+.team-member {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.team-member label,
+.team-member span {
+  margin-right: 10px;
 }
