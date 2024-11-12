@@ -62,7 +62,6 @@ const AddProject = () => {
                 setError('Network error while fetching freelancers.');
             }
         };
-
         fetchChefs();
         fetchFreelancers();
     }, []);
