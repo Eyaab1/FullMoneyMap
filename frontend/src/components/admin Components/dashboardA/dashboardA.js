@@ -3,6 +3,7 @@ import styles from './dashboardA.module.css';
 import { Link } from 'react-router-dom';
 import adminPhoto from '../../../admin.png';  
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -10,9 +11,11 @@ const Dashboard = () => {
   const [managers, setManagers] = useState([]);
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetching projects
   useEffect(() => {
+    
     const fetchProjects = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -27,12 +30,12 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Fetched Projects:', response.data); // Log to check fetched data
+        console.log('Fetched Projects:', response.data);
         setProjects(response.data);
       } catch (err) {
         console.error('Error fetching projects:', err);
       } finally {
-        setLoading(false); // Set loading to false after the fetch attempt
+        setLoading(false); 
       }
     };
 
@@ -55,12 +58,12 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Fetched Financiers:', response.data); // Log to check fetched data
+        console.log('Fetched Financiers:', response.data); 
         setFinanciers(response.data);
       } catch (err) {
         console.error('Error fetching financiers:', err);
       } finally {
-        setLoading(false); // Set loading to false after the fetch attempt
+        setLoading(false); 
       }
     };
 
@@ -83,12 +86,12 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Fetched Managers:', response.data); // Log to check fetched data
+        console.log('Fetched Managers:', response.data); 
         setManagers(response.data);
       } catch (err) {
         console.error('Error fetching managers:', err);
       } finally {
-        setLoading(false); // Set loading to false after the fetch attempt
+        setLoading(false);
       }
     };
 
@@ -111,12 +114,12 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Fetched Freelancers:', response.data); // Log to check fetched data
+        console.log('Fetched Freelancers:', response.data);
         setFreelancers(response.data);
       } catch (err) {
         console.error('Error fetching freelancers:', err);
       } finally {
-        setLoading(false); // Set loading to false after the fetch attempt
+        setLoading(false); 
       }
     };
 
@@ -124,14 +127,18 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading projects...</p>; // Or a spinner to indicate loading
+    return <p>Loading projects...</p>;
   }
+  const handleGoBack = () => {
+    navigate(-1); 
+  };
 
   return (
     <div>
       {/* Navbar */}
       <div className={styles.navbar}>
         <div className={styles.navbarLogo}>
+        <button onClick={handleGoBack} className={styles.goBackButton}>← </button>
           <h2>MoneyMap</h2>
         </div>
         <div className={styles.navbarAdmin}>

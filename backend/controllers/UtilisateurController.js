@@ -1,9 +1,8 @@
-// controllers/utilisateurController.js
 
-const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
-const bcrypt = require('bcrypt'); // Library to hash passwords
+const { pool } = require('../config/database'); 
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// Load environment variables from the .env file
+
 require('dotenv').config();
 
 const crypto = require('crypto');
@@ -70,7 +69,7 @@ exports.createUserByAdmin = async (req, res) => {
     }
 };
 
-// Get all utilisateurs (users)
+
 exports.getUtilisateurs = async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM public."Utilisateurs"');
@@ -89,7 +88,7 @@ exports.createUtilisateur = async (req, res) => {
     }
 
     try {
-        // Hash the password with bcrypt
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await pool.query(
             'INSERT INTO "Utilisateurs" (nom, prenom, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -102,7 +101,7 @@ exports.createUtilisateur = async (req, res) => {
     }
 };
 
-// Get utilisateurs by role
+
 exports.getUtilisateursByRole = async (req, res) => {
     const { role } = req.params;
 
@@ -121,7 +120,7 @@ exports.getUtilisateursByRole = async (req, res) => {
     }
 };
 
-// getUtilisateurById
+
 exports.getUtilisateurById = async (req, res) => {
     const { id } = req.params;
 
@@ -187,10 +186,10 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.deleteUtilisateur = async (req, res) => {
-    const { id } = req.params; // Get the user ID from the route parameter
+    const { id } = req.params; 
 
     try {
-        // Delete the user from the database
+        
         const result = await pool.query(
             'DELETE FROM "Utilisateurs" WHERE id = $1 RETURNING *',
             [id]
@@ -208,43 +207,43 @@ exports.deleteUtilisateur = async (req, res) => {
 };
 
 exports.updateUtilisateur = async (req, res) => {
-    const { id } = req.params; // Get the user ID from the route parameter
-    const { nom, prenom, email, password, role } = req.body; // Extract the updated user data from the request body
+    const { id } = req.params; 
+    const { nom, prenom, email, password, role } = req.body; 
 
-    // Check if required fields are provided
+    
     if (!nom || !prenom || !email || !role) {
         return res.status(400).json({ error: 'Nom, prenom, email, and role are required' });
     }
 
     try {
-        // If password is provided, hash it
+        
         let hashedPassword = null;
         if (password) {
             hashedPassword = await bcrypt.hash(password, 10);
         }
 
-        // Prepare the update query
+        
         let query = 'UPDATE "Utilisateurs" SET nom = $1, prenom = $2, email = $3, role = $4';
         const values = [nom, prenom, email, role];
 
-        // If password is provided, include it in the query
+        
         if (hashedPassword) {
             query += ', password = $5';
             values.push(hashedPassword);
         }
 
-        query += ' WHERE id = $' + (values.length + 1) + ' RETURNING *'; // Add condition to update based on ID
+        query += ' WHERE id = $' + (values.length + 1) + ' RETURNING *'; 
 
         values.push(id);
 
-        // Execute the query
+        
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Return the updated user details
+        
         res.status(200).json(result.rows[0]);
     } catch (error) {
         console.error('Error updating utilisateur:', error);

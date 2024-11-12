@@ -33,24 +33,34 @@ const TransactionHistory = () => {
           }
         });
 
-        const transactionsWithNames = await Promise.all(response.data.map(async (transaction) => {
+        const transactionsWithDetails = await Promise.all(response.data.map(async (transaction) => {
           try {
-            // Include the token in the request header for fetching user details
+            // Fetch user details for addedBy
             const userResponse = await axios.get(`http://localhost:5000/api/utilisateurs/${transaction.addedBy}`, {
               headers: {
-                'Authorization': `Bearer ${token}`, // Include the token in the header
+                'Authorization': `Bearer ${token}`,
               }
             });
-        
-            // Return the transaction with the added user's name
-            return { ...transaction, addedByName: userResponse.data.nom }; 
+            transaction.addedByName = userResponse.data.nom;
+
+            // Fetch project name if transaction type is revenu
+            if (transaction.type === 'revenu' && transaction.revenue_project_id) {
+              const projectResponse = await axios.get(`http://localhost:5000/api/projects/projet/${transaction.revenue_project_id}`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                }
+              });
+              transaction.projectName = projectResponse.data.nom;
+            }
           } catch (err) {
-            console.error('Error fetching user details:', err);
-            return { ...transaction, addedByName: 'Unknown' }; // Fallback if user details can't be fetched
+            console.error('Error fetching details:', err);
+            transaction.addedByName = transaction.addedByName || 'Unknown';
+            transaction.projectName = transaction.projectName || 'Unknown';
           }
+          return transaction;
         }));
         
-        setTransactions(transactionsWithNames);   
+        setTransactions(transactionsWithDetails);   
         setLoading(false);
       } catch (err) {
         setError('Error fetching transactions');
@@ -134,6 +144,7 @@ const TransactionHistory = () => {
         <thead>
           <tr>
             <th>Transaction</th>
+            <th>Source/des</th>
             <th>ID</th>
             <th>Amount</th>
             <th>Date</th>
@@ -146,9 +157,18 @@ const TransactionHistory = () => {
             <tr key={transaction.id}>
               <td>
                 {capitalizeFirstLetter(transaction.description)}
-                {transaction.type === 'depense' && transaction.depense_category ? 
-                  <span className="category-text"> - {capitalizeFirstLetter(transaction.depense_category)}</span> : ''}
+                
               </td>
+              <td>
+              
+                  {transaction.type === 'depense' && transaction.depense_category ? (
+                    `  ${capitalizeFirstLetter(transaction.depense_category)}`
+                  ) : transaction.type === 'revenu' && transaction.projectName ? (
+                    `  ${transaction.projectName}`
+                  ) : ''}
+                
+              </td>
+
               <td>{transaction.id}</td>
               <td>
                 {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
@@ -162,11 +182,7 @@ const TransactionHistory = () => {
               </td>
               <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
               <td>
-                {transaction.type === 'revenu' ? (
-                  'Income'
-                ) : (
-                  'Outcome'
-                )}
+                {transaction.type === 'revenu' ? 'Income' : 'Outcome'}
               </td>
             </tr>
           ))}

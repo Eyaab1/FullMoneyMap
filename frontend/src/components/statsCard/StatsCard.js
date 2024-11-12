@@ -8,9 +8,7 @@ const StatsCard = ({ title, amount, percentage, color }) => {
         <h3>{title}</h3>
         <h2>{amount}</h2>
       </div>
-      {/* <div className="percentage" style={{ color }}>
-        {percentage}
-      </div> */}
+      {}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from './components/sidebar/sideBar';
 import Dashboard from './components/dashboard/dashboard';
 import ProjectList from './components/projectlist/projectList';
@@ -22,6 +23,7 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const pathsWithSidebar = ['/dashboard', '/transactions','/projects'];
+  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
@@ -36,11 +38,12 @@ const App = () => {
         const currentTime = Date.now() / 1000; 
         if (decodedToken.exp >= currentTime) {
           setIsAuthenticated(true);
-          if (user.role === 'admin') {  // Assuming your user object has a 'role' field
+          if (user.role === 'administrateur') { 
             setIsAdmin(true);
             
+            
           }
-             else {
+             else {    
               setIsAdmin(false);
             }
           
@@ -60,7 +63,7 @@ const App = () => {
   }, []);
 
 
-  const login = async (credentials, navigate) => {
+  const login = async (credentials) => {
     try {
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
@@ -69,18 +72,26 @@ const App = () => {
         },
         body: JSON.stringify(credentials),
       });
+      
       console.log('Response status:', response.status);
       if (response.ok) {
         const data = await response.json();
         const { token, user } = data;
+  
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        setIsAuthenticated(true); 
-        
-        navigate('/dashboard'); 
+  
+        setIsAuthenticated(true);
+        if (user.role === 'administrateur') {
+          setIsAdmin(true);
+          navigate('/admin'); 
+        } else {
+          navigate('/dashboard');
+          setIsAdmin(false);
+        }
       } else {
-        const errorData = await response.json(); 
-        console.error('Login error response:', errorData); 
+        const errorData = await response.json();
+        console.error('Login error response:', errorData);
         alert(errorData.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {
@@ -88,7 +99,6 @@ const App = () => {
       alert('An error occurred. Please try again later.');
     }
   };
-
   const logout = () => {
    
     localStorage.removeItem('token');
@@ -114,7 +124,7 @@ const App = () => {
           
           
           {/*admin routeq*/}          
-          <Route path='/admin' element={<DashboardA/>}/>
+          <Route path='/admin' element={isAuthenticated ? <DashboardA/> : <Navigate to="/login" />}/>
           <Route path="/project/:id" element={<SelectedProject /> } />
           <Route path="/financial" element={<Financiers /> } />
           <Route path="/managers" element={<Managers /> } />

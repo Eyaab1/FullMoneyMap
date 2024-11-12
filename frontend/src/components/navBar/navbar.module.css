@@ -22,6 +22,7 @@
   .navbarLogo {
     display: flex;
     align-items: center;
+    width: 200px;
   }
   .goBackButton {
     background-color: transparent;
