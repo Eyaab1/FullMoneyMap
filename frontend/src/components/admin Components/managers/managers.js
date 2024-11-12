@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Managers = () => {
-
   const [managers, setManagers] = useState([]);
-  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -12,7 +10,8 @@ const Managers = () => {
     prenom: '',
     nom: '',
     email: '',
-    role: 'chef de projet' // Set role to "chef de projet"
+    cin: '', // Add CIN field
+    role: 'chef de projet', // Set role to "chef de projet"
   });
 
   // Fetching managers
@@ -44,10 +43,9 @@ const Managers = () => {
     fetchManagers();
   }, []);
 
-  //remove manager
+  // Remove manager
   const removeManager = async (managerId) => {
     const token = localStorage.getItem('token');
-
     if (!token) {
       setError('Unauthorized access - No token found');
       return;
@@ -67,8 +65,7 @@ const Managers = () => {
     }
   };
 
-
-  //add manger
+  // Add manager
   const handleAddManager = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -80,16 +77,18 @@ const Managers = () => {
       const response = await axios.post('http://localhost:5000/api/utilisateurs/create', newManager, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Include the token
         },
       });
-      setManagers([...managers, response.data]);
+
+      setManagers([...managers, response.data]); // Add the new manager to the list
       setShowForm(false); // Hide the form after adding
       setNewManager({ prenom: '', nom: '', email: '', role: 'chef de projet' }); // Reset form fields
     } catch (err) {
       setError('Failed to add manager');
     }
   };
+
 
   return (
     <div className="project-list-container">

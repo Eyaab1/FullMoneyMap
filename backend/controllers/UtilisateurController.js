@@ -10,7 +10,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 exports.createUserByAdmin = async (req, res) => {
-    // Extract the token from the authorization header
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
 
     if (!token) {
@@ -18,12 +17,10 @@ exports.createUserByAdmin = async (req, res) => {
     }
 
     try {
-        // Verify the token to get the connected user's information
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const adminEmail = decoded.email;
-        const userRole = decoded.role;  // Get the role from the decoded JWT
+        const userRole = decoded.role;
 
-        // Check if the user is an administrator
         if (userRole !== 'administrateur') {
             return res.status(403).json({ error: 'Only administrators can create users' });
         }
@@ -34,41 +31,42 @@ exports.createUserByAdmin = async (req, res) => {
             return res.status(400).json({ error: 'All fields except password are required' });
         }
 
-        // Generate a random password for the new user
         const generatedPassword = crypto.randomBytes(8).toString('hex');
         const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
-        // Insert the new user into the database
         const result = await pool.query(
             'INSERT INTO "Utilisateurs" (nom, prenom, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [nom, prenom, email, hashedPassword, role]
         );
 
-        // Set up the email transporter using admin's email credentials
+        console.log('User created:', result.rows[0]);
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: adminEmail, // Use the admin email from the decoded JWT
-                pass: process.env.ADMIN_EMAIL_PASSWORD, // Admin's email password from the environment
+                user: process.env.ADMIN_EMAIL,
+                pass: process.env.ADMIN_EMAIL_PASSWORD,
             },
         });
 
-        // Define the email content
         const mailOptions = {
-            from: adminEmail,  // Use the admin's email address
-            to: email,  // Recipient's email address
+            from: process.env.ADMIN_EMAIL,
+            to: email,
             subject: 'Your Account Details',
             text: `Hello ${prenom},\n\nYour account has been created successfully by the administrator. Here are your login details:\n\nEmail: ${email}\nPassword: ${generatedPassword}\n\nPlease change your password after logging in.\n\nBest regards,\nYour Admin Team`,
         };
 
-        // Send the email
+        console.log('Sending email to:', email);
         await transporter.sendMail(mailOptions);
 
-        // Respond with the created user details
         res.status(201).json({ ...result.rows[0], generatedPassword });
     } catch (error) {
-        console.error('Error creating user or sending email:', error);
-        res.status(500).json({ error: 'Error creating utilisateur or sending email' });
+        console.error('Error creating user or sending email:', error.stack);
+        res.status(500).json({
+            error: 'Error creating utilisateur or sending email',
+            message: error.message || 'Unknown error occurred',
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+        });
     }
 };
 
