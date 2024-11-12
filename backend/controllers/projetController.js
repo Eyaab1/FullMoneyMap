@@ -197,7 +197,7 @@ exports.getProjetWithManager = async (req, res) => {
     }
 };
 exports.getUpcomingDeadlines = async (req, res) => {
-    const daysAhead = req.query.days || 3;
+    const daysAhead = req.query.days || 7;
 
     try {
         const result = await pool.query(`

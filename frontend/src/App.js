@@ -7,7 +7,7 @@ import Login from './components/login/login';
 import AddProject from './components/projectlist/addProject';
 import TransactionHistory from './components/transactionHistory/transactionHistory';
 import AddTransaction from './components/addTransaction/addTransaction';
-
+import NavBar from './components/navBar/navbar';
 import DashboardA from './components/admin Components/dashboardA/dashboardA';
 import SelectedProject from './components/admin Components/adminProject/selectedProject';
 import Financiers from './components/admin Components/financiers/financiers'
@@ -20,6 +20,7 @@ import {jwtDecode} from 'jwt-decode';
 const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathsWithSidebar = ['/dashboard', '/transactions','/projects'];
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -33,10 +34,16 @@ const App = () => {
         const decodedToken = jwtDecode(token);
         console.log("Decoded token:", decodedToken);
         const currentTime = Date.now() / 1000; 
-
-        
         if (decodedToken.exp >= currentTime) {
           setIsAuthenticated(true);
+          if (user.role === 'admin') {  // Assuming your user object has a 'role' field
+            setIsAdmin(true);
+            
+          }
+             else {
+              setIsAdmin(false);
+            }
+          
         } else {
           logout(); 
         }
@@ -69,6 +76,7 @@ const App = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         setIsAuthenticated(true); 
+        
         navigate('/dashboard'); 
       } else {
         const errorData = await response.json(); 
@@ -90,8 +98,10 @@ const App = () => {
   };
   return (
     <div className="App">
-     {isAuthenticated && pathsWithSidebar.includes(location.pathname) && <Sidebar logout={logout} />}
+            {isAuthenticated && !isAdmin && pathsWithSidebar.includes(location.pathname) && <NavBar />} {/* Render NavBar only for non-admin users */}
 
+     {isAuthenticated && pathsWithSidebar.includes(location.pathname) && <Sidebar logout={logout} />}
+      
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />

@@ -3,23 +3,35 @@ import './deadlines.css';
 
 const UpcomingDeadlines = () => {
   const [deadlines, setDeadlines] = useState([]);
-
   useEffect(() => {
     const fetchDeadlines = async () => {
       try {
-        const response = await fetch('/api/projects/upcoming-deadlines?days=3');
-        const data = await response.json();
-        setDeadlines(data);
+        const token = localStorage.getItem('token'); 
+        const response = await fetch('http://localhost:5000/api/projects/upcomingDeadlines?days=7', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+          setDeadlines(data);
+        } else {
+          console.error('Failed to fetch upcoming deadlines');
+        }
       } catch (error) {
         console.error('Error fetching deadlines:', error);
       }
     };
 
     fetchDeadlines();
-    const interval = setInterval(fetchDeadlines, 24 * 60 * 60 * 1000); // Fetch daily
-
-    return () => clearInterval(interval);
   }, []);
+  const capitalizeFirstLetter = (name) => {
+    if (!name) return '';
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
 
   return (
     <div className="upcoming-deadlines">
@@ -27,13 +39,16 @@ const UpcomingDeadlines = () => {
       <ul>
         {deadlines.map((deadline) => (
           <li key={deadline.id} className="deadline-item">
-            <div className="deadline-title">{deadline.nom}</div>
-            <div className="deadline-details">
-              <span className="deadline-date">{new Date(deadline.date_fin).toLocaleDateString()}</span>
-              <span className="deadline-time">{new Date(deadline.date_fin).toLocaleTimeString()}</span>
+            <div className="deadline-left">
+              <div className="deadline-title">{capitalizeFirstLetter(deadline.nom)}</div>
+              <div className="deadline-person">
+                {capitalizeFirstLetter(deadline.manager_nom)} {capitalizeFirstLetter(deadline.manager_prenom)}
+              </div>
             </div>
-            <div className="deadline-person">
-              {deadline.manager_nom} {deadline.manager_prenom}
+            <div className="deadline-right">
+              <span className="deadline-date">{new Date(deadline.date_fin).toLocaleDateString()}</span>
+              <br />
+             
             </div>
           </li>
         ))}

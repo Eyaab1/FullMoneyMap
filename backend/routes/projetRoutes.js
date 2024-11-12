@@ -9,6 +9,7 @@ router.get('/projet/:id', projetController.getProjetById);
 
 router.get('/projetWithManager/:id', projetController.getProjetWithManager);
 
+router.get('/upcomingDeadlines',projetController.getUpcomingDeadlines)
 // Add new project
 router.post('/create', projetController.addProjet);
 
@@ -24,5 +25,6 @@ router.get('/chef/:id_chef', projetController.getProjetsByChef);
 router.get('/etat/:id', projetController.getProjetEtat);
 
 router.put('/projets/:id', projetController.updateProjet);
+
 
 module.exports = router;

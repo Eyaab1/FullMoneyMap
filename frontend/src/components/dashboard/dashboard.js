@@ -3,7 +3,8 @@ import './dashboard.css';
 import { Chart, registerables } from 'chart.js';
 import StatsCard from '../statsCard/StatsCard';
 import { Line } from 'react-chartjs-2';
-
+import NavBar from '../navBar/navbar';
+import Deadlines from '../deadlines/deadlines'
 Chart.register(...registerables);
 
 const Dashboard = () => {
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState(0); 
   const [totalExpenses, setTotalExpenses] = useState(0); 
   const [solde, setSolde] = useState(0);
+  const [error, setError] = useState(null);
 
   const fetchTransactions = async () => {
     const token = localStorage.getItem('token');
@@ -37,8 +39,8 @@ const Dashboard = () => {
           setIncomeData(revenues);
           const totalRevenue = revenues.reduce((acc, curr) => acc + curr.amount, 0);
           setTotalRevenue(totalRevenue); 
-        } else {
-          console.error('Failed to fetch revenues');
+        }  else {
+          throw new Error('Failed to fetch revenues');
         }
 
         if (expensesResponse.ok) {
@@ -46,14 +48,19 @@ const Dashboard = () => {
           setExpenseData(expenses);
           const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
           setTotalExpenses(totalExpenses);
-        } else {
-          console.error('Failed to fetch expenses');
+        }else {
+          throw new Error('Failed to fetch expenses');
         }
+        setError(null);
+
       } catch (error) {
         console.error('Error fetching transactions:', error);
+        setError(error.message);
       }
     } else {
       console.error('No token found, please log in.');
+      setError('Authentication error: No token found. Please log in.');
+      
     }
   };
 
@@ -86,36 +93,42 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <div className="stats-section">
-        <StatsCard 
-          title="Total Revenue" 
-          amount={`${totalRevenue.toFixed(2)} dt`} 
-          // percentage={15} 
-          color="green" 
-        />
-        <StatsCard 
-          title="Total Expenses" 
-          amount={`${totalExpenses.toFixed(2)} dt`} 
-          // percentage={-5} 
-          color="red" 
-        />
-        <StatsCard 
-          title="Solde" 
-          amount={`${solde.toFixed(2)} dt`} 
-          // percentage={10} 
-          color={solde >= 0 ? "blue" : "red"}  
-        />
+    <>
+    <div className='navContainer'><NavBar /></div>
+    <div className="container">
+      <div className='rightSide'>
+        <Deadlines />
       </div>
+      <div className='main'>
+        {error && (
+          <div className="error-banner">
+            <p>{error}</p>
+          </div>
+        )}
+        <div className="stats-section">
+          <StatsCard
+            title="Total Revenue"
+            amount={`${totalRevenue.toFixed(2)} dt`}
+            color="green" />
+          <StatsCard
+            title="Total Expenses"
+            amount={`${totalExpenses.toFixed(2)} dt`}
+            color="red" />
+          <StatsCard
+            title="Solde"
+            amount={`${solde.toFixed(2)} dt`}
+            color={solde >= 0 ? "blue" : "red"} />
+        </div>
 
-      <div className="spending-report">
-        <h2>Spending Report</h2>
-        <div className="chart-container">
-          <Line data={chartData} /> 
-          <button className="view-report-button">View Report</button>
+        <div className="spending-report">
+          <h2>Spending Report</h2>
+          <div className="chart-container">
+            <Line data={chartData} />
+          </div>
         </div>
       </div>
     </div>
+  </>
   );
 };
 
