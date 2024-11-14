@@ -1,122 +1,111 @@
 .transaction-history {
-    position: absolute;
-    top: 80px;
-    width: 70%;
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-  }
-  .transaction-history-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .transaction-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .transaction-buttons button {
-    margin-left: 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .view-all-btn {
-    background-color: #007bff;
-  }
-  
-  .add-transaction-btn {
-    background-color: #4caf50;
-  }
-  
-  .transaction-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .transaction-table th, .transaction-table td {
-    text-align: left;
-    padding: 12px;
-  }
-  
-  .transaction-table th {
-    background-color: #f5f5f5;
-  }
-  
-  .transaction-table td {
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .transaction-table td:nth-child(3) {
-    font-weight: bold;
-  }
-  .transaction-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  .search-bar input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .sort-dropdown select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .add-transaction-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .type-filter-dropdown select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .transaction-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .type-filter-dropdown select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .transaction-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .category-text {
-    font-size: 0.9em;
-    color: #666;
-    font-style: italic;
-  }
-  
-      
+  position: relative;
+  top: 80px;
+  width: 90%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.transaction-history:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.transaction-history-container {
+  padding: 24px;
+  background-color: #f4f6f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.add-transaction-btn button {
+  margin-left: 12px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.transaction-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.add-transaction-btn {
+  background-color: #28a745;
+}
+
+.add-transaction-btn:hover {
+  background-color: #218838;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 0.95em;
+}
+
+.transaction-table th,
+.transaction-table td {
+  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background-color: #e9ecef;
+  font-weight: 600;
+}
+
+.transaction-table td {
+  background-color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+.transaction-table tr:hover td {
+  background-color: #f1f3f5;
+}
+
+.transaction-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 16px;
+}
+
+.search-bar input,
+.sort-dropdown select,
+.type-filter-dropdown select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-bar input:focus,
+.sort-dropdown select:focus,
+.type-filter-dropdown select:focus {
+  border-color: #007bff;
+}
+
+.category-text {
+  font-size: 0.85em;
+  color: #777;
+  font-style: italic;
+}
