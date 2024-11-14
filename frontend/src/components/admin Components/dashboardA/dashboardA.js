@@ -5,12 +5,20 @@ import adminPhoto from '../../../admin.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Dashboard = () => {
+const Dashboard = ({ logout }) => {
   const [projects, setProjects] = useState([]);
   const [financiers, setFinanciers] = useState([]);
   const [managers, setManagers] = useState([]);
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [projectIdToDelete, setProjectIdToDelete] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);  // Added state for dropdown
+
+  const handleMouseEnter = () => setShowDropdown(true);
+  const handleMouseLeave = () => setShowDropdown(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const navigate = useNavigate();
 
   // Fetching projects
@@ -133,6 +141,50 @@ const Dashboard = () => {
     navigate(-1); 
   };
 
+
+
+
+  // Open modal and set projectId
+  const openDeleteModal = (projectId) => {
+    setProjectIdToDelete(projectId);
+    setShowModal(true);
+  };
+  
+  // Close modal and clear projectId
+  const closeDeleteModal = () => {
+    setShowModal(false);
+    setProjectIdToDelete(null);
+  };
+  
+  // Confirm delete function
+  const confirmDelete = async () => {
+    if (!projectIdToDelete) return;
+  
+    try {
+      // Delete associated salaries
+      await axios.delete(`http://localhost:5000/api/salaire/${projectIdToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      // Delete project
+      await axios.delete(`http://localhost:5000/api/projects/${projectIdToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      // Refresh the projects list after deletion
+      setProjects(projects.filter(project => project.id !== projectIdToDelete));
+      closeDeleteModal();
+    } catch (error) {
+      console.error("Error deleting project and associated salaries:", error);
+    }
+  };
+  
+
+
   return (
     <div>
       {/* Navbar */}
@@ -141,10 +193,22 @@ const Dashboard = () => {
         <button onClick={handleGoBack} className={styles.goBackButton}>← </button>
           <h2>MoneyMap</h2>
         </div>
-        <div className={styles.navbarAdmin}>
-          <span className={styles.adminText}>Admin</span>
-          <img src={adminPhoto} alt="Admin" className={styles.adminPhoto} />
-        </div>
+        <div 
+        className={styles.navbarAdmin}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <span className={styles.adminText}>Admin</span>
+        <img src={adminPhoto} alt="Admin" className={styles.adminPhoto} />
+
+        {showDropdown && (
+          <div className={styles.dropdownMenu}>
+            <button onClick={logout} className={styles.dropdownButton}>
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
       </div>
       
       {/* Project List */}
@@ -152,16 +216,15 @@ const Dashboard = () => {
       <div className={styles.projectContainer}>
         <div className={styles.projectHeader}>
           <h3>Project List</h3>
-          <div className={styles.headerButtons}>
-            <button className={styles.viewAllButton}>View All</button>
-          </div>
+          
         </div>
         <div className={styles.projectTable}>
           <div className={styles.tableHeader}>
             <p>Project Name</p>
             <p>Status</p>
             <p>Deadline</p>
-            <p>Details</p>
+            <p>Edit</p>
+            <p>Delete</p>
           </div>
           {projects.length > 0 ? (
             projects.map((project, index) => (
@@ -178,8 +241,24 @@ const Dashboard = () => {
                   })}
                 </p>
                 <Link to={`/project/${project.id}`}>
-                  <button className={styles.detailsButton}>Details</button>
+                  <button className={styles.detailsButton}>Edit</button>
                 </Link>
+                
+                <button className={styles.detailsButton} onClick={() => openDeleteModal(project.id)}>
+                      Delete
+                    </button>
+
+                    {showModal && (
+  <div className="modal">
+    <div className="modal-content">
+      <p>Are you sure you want to delete this project?</p>
+      <button className="confirm-button" onClick={confirmDelete}>Yes</button>
+      <button className="cancel-button" onClick={closeDeleteModal}>No</button>
+    </div>
+  </div>
+)}
+
+
               </div>
             ))
           ) : (

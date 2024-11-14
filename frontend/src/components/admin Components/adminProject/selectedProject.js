@@ -12,13 +12,12 @@ const SelectedProject = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [editedProject, setEditedProject] = useState({});
-  const [showModal, setShowModal] = useState(false);
   const [showAddFreelancerModal, setShowAddFreelancerModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState('');
   const [salary, setSalary] = useState('');
+  const [editedProject, setEditedProject] = useState(project); 
+
 
   const handleSalaryChange = (e, index) => {
     const updatedFreelancers = [...freelancer];
@@ -135,37 +134,73 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
     fetchAllFreelancers();
   }, []);
   
-  // Filter freelancers not already working on the project
-  useEffect(() => {
-    // IDs of freelancers already on the project
-    const currentFreelancerIds = freelancer.map(f => f.id);
-    
-    // Filter to include only freelancers not in the project
-    const availableFreelancers = allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
-    setFilteredFreelancers(availableFreelancers);
-  }, [allFreelancers, freelancer]);
-  
-  // Open modal for adding a freelancer
-  const handleShowAddFreelancerModal = () => setShowAddFreelancerModal(true);
-  const handleShowDeleteModal = () => setShowDeleteModal(true);
-  
-  // Add a freelancer to the project
-  const handleAddFreelancer = () => {
-    if (selectedFreelancer && salary) {
-      const newFreelancer = allFreelancers.find(f => f.id === selectedFreelancer);
-      if (newFreelancer) {
-        setFreelancer([...freelancer, { ...newFreelancer, salary }]);
-        setShowAddFreelancerModal(false);
-        setSelectedFreelancer('');
-        setSalary('');
+// Filter freelancers not already working on the project
+const filterAvailableFreelancers = () => {
+  const currentFreelancerIds = freelancer.map(f => f.id);
+  return allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
+};
+
+// Open modal for adding a freelancer
+const handleShowAddFreelancerModal = () => {
+  // Update the list of freelancers who are not already on the project
+  setFilteredFreelancers(filterAvailableFreelancers());
+  setShowAddFreelancerModal(true);
+};
+
+// Add a freelancer to the project
+const handleAddFreelancer = async () => {
+  if (selectedFreelancer && salary) {
+    const newFreelancer = allFreelancers.find(f => f.id === parseInt(selectedFreelancer));
+    if (newFreelancer) {
+      // Prepare the data to send to the backend
+      const data = {
+        id_freelancer: newFreelancer.id,
+        id_projet: id, // Assuming `id` is the project ID from useParams
+        salaire: salary,
+      };
+
+      try {
+        // Make a POST request to add the freelancer's salary to the database
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:5000/api/salaires/add', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 201) {
+          // Successfully added freelancer to the salaire table
+          // Add the freelancer to the local state
+          setFreelancer([...freelancer, { ...newFreelancer, salaire: salary }]);
+          setShowAddFreelancerModal(false);
+          setSelectedFreelancer(''); // Reset selected freelancer
+          setSalary(''); // Reset salary
+        }
+      } catch (err) {
+        setError('Failed to add freelancer salary');
+        console.error('Error adding freelancer salary:', err);
       }
     }
-  };
+  } else {
+    alert('Please select a freelancer and enter a salary');
+  }
+};
 
 
-  const toggleEditMode = () => {
+useEffect(() => {
+  setEditedProject(project); 
+}, [project]);
+
+
+
+const toggleEditMode = () => {
+  if (editMode) {
+    updateProject();
+  } else {
     setEditMode(!editMode);
-  };
+  }
+};
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -175,20 +210,66 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
     }));
   };
 
-  // Modal functions
-  const openDeleteModal = () => {
-    setShowModal(true);
+  const updateProject = async () => {
+    const token = localStorage.getItem('token');
+    
+    // Check for authorization
+    if (!token) {
+      setError('Unauthorized access - No token found');
+      return;
+    }
+  
+    const { project_name, budget, date_debut, date_fin, etat, manager_id } = editedProject;
+  
+    // Make sure all required fields are present
+    if (!project_name || !budget || !date_debut || !date_fin || !etat || !manager_id) {
+      setError('All fields are required');
+      return;
+    }
+  
+    try {
+      // Send PUT request to update project
+      const response = await axios.put(
+        `http://localhost:5000/api/projects/projets/${id}`,  // Make sure 'id' is the correct project ID
+        {
+          method: 'PUT',
+          nom: project_name,
+          date_debut,
+          date_fin,
+          budget,
+          etat,
+          id_chef: manager_id,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        // Update project state
+        setProject(response.data);
+        setEditedProject(response.data); // Update the state with the latest project data
+        setEditMode(false); // Exit edit mode
+        console.log('Project updated successfully:', response.data);
+      } else {
+        setError('Failed to update project');
+      }
+  
+    } catch (err) {
+      // More detailed error handling
+      if (err.response) {
+        setError(`Error: ${err.response.data.error || 'Failed to update project'}`);
+        console.error('Error response:', err.response.data);
+      } else {
+        setError('Network error');
+        console.error('Error:', err);
+      }
+    }
   };
-
-  const closeDeleteModal = () => {
-    setShowModal(false);
-  };
-
-  const confirmDelete = () => {
-    alert("Project deleted"); // Replace this with the actual delete logic, e.g., API call to delete project
-    setShowModal(false); // Close modal after deletion
-  };
-
+  
 
   
 
@@ -328,36 +409,40 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
 
       {/* Modal for adding freelancer */}
       {showAddFreelancerModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Add Freelancer</h3>
-            <select
-  value={selectedFreelancer}
-  onChange={(e) => setSelectedFreelancer(e.target.value)}
->
-  <option value="">Select Freelancer</option>
-  {filteredFreelancers.map((freelancer) => (
-    <option key={freelancer.id} value={freelancer.id}>
-      {freelancer.prenom} {freelancer.nom}
-    </option>
-  ))}
-  </select>
-
-            <input
-              type="number"
-              placeholder="Enter salary"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-            />
-            <div className="button-container">
-            <button className="modify-button" onClick={handleAddFreelancer}>Add</button>
-            <button className="modify-button delete-button" onClick={() => setShowAddFreelancerModal(false)}>Cancel</button>
-          </div>
-          </div>
-
-        </div>
-      )}
-
+  <div className="modal">
+    <div className="modal-content">
+      <h3>Add Freelancer</h3>
+      <select
+        value={selectedFreelancer}
+        onChange={(e) => setSelectedFreelancer(e.target.value)}
+      >
+        <option value="">Select Freelancer</option>
+        {filteredFreelancers.map((freelancer) => (
+          <option key={freelancer.id} value={freelancer.id}>
+            {freelancer.prenom} {freelancer.nom}
+          </option>
+        ))}
+      </select>
+      <input
+        type="number"
+        placeholder="Enter salary"
+        value={salary}
+        onChange={(e) => setSalary(e.target.value)}
+      />
+      <div className="button-container">
+        <button className="modify-button" onClick={handleAddFreelancer}>
+          Add
+        </button>
+        <button
+          className="modify-button delete-button"
+          onClick={() => setShowAddFreelancerModal(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
 
       
@@ -366,21 +451,10 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
         <button className="modify-button" onClick={toggleEditMode}>
           {editMode ? "Save" : "Edit"}
         </button>
-        <button className="modify-button delete-button" onClick={openDeleteModal}>
-          Delete
-        </button>
+        
       </div>
 
-      {/* Delete Modal */}
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>Are you sure you want to delete this project?</p>
-            <button className="confirm-button" onClick={confirmDelete}>Yes</button>
-            <button className="cancel-button" onClick={closeDeleteModal}>No</button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

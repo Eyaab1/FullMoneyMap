@@ -108,6 +108,7 @@
 .delete-button {
   background-color: rgb(224, 21, 21); /* Red background for Delete */
   color: white;
+  width: 10px;
 }
 
 .modify-button:not(.delete-button) {
