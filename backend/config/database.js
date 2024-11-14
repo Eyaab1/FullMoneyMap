@@ -33,28 +33,23 @@ async function connectDB() {
             console.error('Error checking or creating database:', err);
             return;
         } finally {
-            
             await pool.end();
         }
 
-        // Now create a new pool for the moneymap database
         pool = new Pool({
             user: 'postgres',
             host: 'localhost',
-            database: 'moneymap', // Switch to 'moneymap' database
+            database: 'moneymap',
             password: 'admin',
             port: 5432,
         });
     }
 
-    // Create tables if they don't exist
     await createTables(pool);
     console.log('Connected to the moneymap database.');
 }
 
-// Function to create tables
 async function createTables(pool) {
-    // Create "Utilisateurs" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Utilisateurs" (
             "id" SERIAL PRIMARY KEY,
@@ -67,7 +62,6 @@ async function createTables(pool) {
     `);
     console.log('Table "Utilisateurs" created successfully.');
 
-    // Create "Projets" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Projets" (
             "id" SERIAL PRIMARY KEY,
@@ -76,12 +70,11 @@ async function createTables(pool) {
             "date_fin" TIMESTAMP WITH TIME ZONE NOT NULL,
             "budget" FLOAT NOT NULL,
             "etat" VARCHAR(50) NOT NULL CHECK (etat IN ('en cours', 'termine')),
-            "id_chef" INTEGER NOT NULL REFERENCES "Utilisateurs" ("id")
+            "id_chef" INTEGER NOT NULL REFERENCES "Utilisateurs" ("id") ON DELETE CASCADE
         );
     `);
     console.log('Table "Projets" created successfully.');
 
-    // Create "Transactions" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Transactions" (
             "id" SERIAL PRIMARY KEY,
@@ -95,16 +88,14 @@ async function createTables(pool) {
     `);
     console.log('Table "Transactions" created successfully.');
 
-    // Create "Revenues" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Revenues" (
             "transaction_id" INTEGER PRIMARY KEY REFERENCES "Transactions" ("id") ON DELETE CASCADE,
-            "id_projet" INTEGER NOT NULL REFERENCES "Projets" ("id") ON DELETE CASCADE
+            "id_projet" INTEGER REFERENCES "Projets" ("id") ON DELETE CASCADE
         );
     `);
     console.log('Table "Revenues" created successfully.');
 
-    // Create "Dépenses" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Depenses" (
             "transaction_id" INTEGER PRIMARY KEY REFERENCES "Transactions" ("id") ON DELETE CASCADE,
@@ -113,7 +104,6 @@ async function createTables(pool) {
     `);
     console.log('Table "Dépenses" created successfully.');
 
-    // Create "Freelancers" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Freelancers" (
             "id" SERIAL PRIMARY KEY,
@@ -132,7 +122,6 @@ async function createTables(pool) {
     `);
     console.log('Table "Freelancers" created successfully.');
 
-    // Create "Salaires" table
     await pool.query(`
         CREATE TABLE IF NOT EXISTS "Salaires" (
             "id_projet" INTEGER NOT NULL,
@@ -146,5 +135,4 @@ async function createTables(pool) {
     console.log('Table "Salaires" created successfully.');
 }
 
-// Export the connectDB function
 module.exports = { connectDB, pool };
