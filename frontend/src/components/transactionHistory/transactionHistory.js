@@ -110,14 +110,14 @@ const TransactionHistory = () => {
       <div className="transaction-header">
         <h3>Transaction History</h3>
         <div className="transaction-controls">
-          <div className="search-bar">
+          {/* <div className="search-bar">
             <input
               type="text"
               placeholder="Search.."
               value={searchTerm}
               onChange={handleSearchChange}
             />
-          </div>
+          </div> */}
           <div className="sort-dropdown">
             <label>Sort By </label>
             <select value={sortOption} onChange={handleSortChange}>
@@ -144,8 +144,8 @@ const TransactionHistory = () => {
         <thead>
           <tr>
             <th>Transaction</th>
-            <th>Source/des</th>
-            <th>ID</th>
+            <th>Source du transaction</th>
+            
             <th>Amount</th>
             <th>Date</th>
             <th>Added By</th>
@@ -169,7 +169,7 @@ const TransactionHistory = () => {
                 
               </td>
 
-              <td>{transaction.id}</td>
+              
               <td>
                 {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
               </td>
