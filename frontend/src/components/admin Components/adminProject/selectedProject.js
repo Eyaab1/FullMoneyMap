@@ -16,8 +16,18 @@ const SelectedProject = () => {
 const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState('');
   const [salary, setSalary] = useState('');
-  const [editedProject, setEditedProject] = useState(project); 
+  
+    const [editedProject, setEditedProject] = useState({
+      project_name: "",
+      budget: "",
+      date_debut: "",
+      date_fin: "",
+      etat: "",
+      manager_id: "",
+    });
 
+    
+    
 
   const handleSalaryChange = (e, index) => {
     const updatedFreelancers = [...freelancer];
@@ -142,7 +152,6 @@ const filterAvailableFreelancers = () => {
 
 // Open modal for adding a freelancer
 const handleShowAddFreelancerModal = () => {
-  // Update the list of freelancers who are not already on the project
   setFilteredFreelancers(filterAvailableFreelancers());
   setShowAddFreelancerModal(true);
 };
@@ -152,15 +161,13 @@ const handleAddFreelancer = async () => {
   if (selectedFreelancer && salary) {
     const newFreelancer = allFreelancers.find(f => f.id === parseInt(selectedFreelancer));
     if (newFreelancer) {
-      // Prepare the data to send to the backend
       const data = {
         id_freelancer: newFreelancer.id,
-        id_projet: id, // Assuming `id` is the project ID from useParams
+        id_projet: id,
         salaire: salary,
       };
 
       try {
-        // Make a POST request to add the freelancer's salary to the database
         const token = localStorage.getItem('token');
         const response = await axios.post('http://localhost:5000/api/salaires/add', data, {
           headers: {
@@ -170,12 +177,10 @@ const handleAddFreelancer = async () => {
         });
 
         if (response.status === 201) {
-          // Successfully added freelancer to the salaire table
-          // Add the freelancer to the local state
           setFreelancer([...freelancer, { ...newFreelancer, salaire: salary }]);
           setShowAddFreelancerModal(false);
-          setSelectedFreelancer(''); // Reset selected freelancer
-          setSalary(''); // Reset salary
+          setSelectedFreelancer(''); 
+          setSalary('');
         }
       } catch (err) {
         setError('Failed to add freelancer salary');
@@ -198,78 +203,72 @@ const toggleEditMode = () => {
   if (editMode) {
     updateProject();
   } else {
-    setEditMode(!editMode);
+    setEditMode(true); 
   }
 };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedProject((prevProject) => ({
-      ...prevProject,
-      [name]: value,
-    }));
-  };
 
-  const updateProject = async () => {
-    const token = localStorage.getItem('token');
-    
-    // Check for authorization
-    if (!token) {
-      setError('Unauthorized access - No token found');
-      return;
-    }
-  
-    const { project_name, budget, date_debut, date_fin, etat, manager_id } = editedProject;
-  
-    // Make sure all required fields are present
-    if (!project_name || !budget || !date_debut || !date_fin || !etat || !manager_id) {
-      setError('All fields are required');
-      return;
-    }
-  
-    try {
-      // Send PUT request to update project
-      const response = await axios.put(
-        `http://localhost:5000/api/projects/projets/${id}`,  // Make sure 'id' is the correct project ID
-        {
-          method: 'PUT',
-          nom: project_name,
-          date_debut,
-          date_fin,
-          budget,
-          etat,
-          id_chef: manager_id,
+
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setEditedProject((prevProject) => ({
+    ...prevProject,
+    [name]: value,
+  }));
+};
+const updateProject = async () => {
+  console.log("Updating project...");
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setError("Unauthorized access - No token found");
+    return;
+  }
+
+  const { project_name, budget, date_debut, date_fin, etat, manager_id } = editedProject;
+
+  // Validate required fields
+  if (!project_name || !budget || !date_debut || !date_fin || !etat || !manager_id) {
+    setError("All fields are required");
+    return;
+  }
+
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/projects/edit/${project.id}`,
+      {
+        project_name,
+        budget,
+        date_debut,
+        date_fin,
+        etat,
+        manager_id
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      if (response.status === 200) {
-        // Update project state
-        setProject(response.data);
-        setEditedProject(response.data); // Update the state with the latest project data
-        setEditMode(false); // Exit edit mode
-        console.log('Project updated successfully:', response.data);
-      } else {
-        setError('Failed to update project');
       }
-  
-    } catch (err) {
-      // More detailed error handling
-      if (err.response) {
-        setError(`Error: ${err.response.data.error || 'Failed to update project'}`);
-        console.error('Error response:', err.response.data);
-      } else {
-        setError('Network error');
-        console.error('Error:', err);
-      }
+    );
+
+    if (response.status === 200) {
+      console.log("Project updated successfully:", response.data);
+      setEditMode(false); // Exit edit mode after successful update
+    } else {
+      setError("Failed to update project");
     }
-  };
-  
+  } catch (err) {
+    if (err.response) {
+      setError(`Error: ${err.response.data.error || "Failed to update project"}`);
+      console.error("Error response:", err.response.data);
+    } else {
+      setError("Network error");
+      console.error("Error:", err);
+    }
+  }
+};
+
 
   
 
@@ -307,7 +306,8 @@ const toggleEditMode = () => {
       {/* Editable Project Details */}
       <div className="project-details">
         <div className="details-left">
-        <div className="detail-item">
+          {/* Project Manager */}
+          <div className="detail-item">
             <label>Project Manager</label>
             {editMode ? (
               <select
@@ -322,32 +322,36 @@ const toggleEditMode = () => {
                 ))}
               </select>
             ) : (
-              <p>{project.manager_nom} {project.manager_prenom}</p> // Display as text when not editing
+              <p>
+                {project.manager_nom} {project.manager_prenom}
+              </p> // Display as text when not editing
             )}
           </div>
-          <div className="detail-item">
-  <label>Start Date</label>
-  {editMode ? (
-    <input
-      type="date"
-      name="date_debut"
-      value={editedProject.date_debut ? new Date(editedProject.date_debut).toISOString().split('T')[0] : ''}
-      onChange={handleInputChange}
-    />
-  ) : (
-    <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
-  )}
-</div>
 
+          {/* Start Date */}
+          <div className="detail-item">
+            <label>Start Date</label>
+            {editMode ? (
+              <input
+                type="date"
+                name="date_debut"
+                value={editedProject.date_debut ? new Date(editedProject.date_debut).toISOString().split('T')[0] : ''}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
+            )}
+          </div>
         </div>
 
         <div className="details-right">
-        <div className="detail-item">
+          {/* Project State */}
+          <div className="detail-item">
             <label>State</label>
             {editMode ? (
               <select
                 name="etat"
-                value={editedProject.etat}
+                value={editedProject.etat || ''}
                 onChange={handleInputChange}
               >
                 <option value="en cours">En cours</option>
@@ -357,22 +361,26 @@ const toggleEditMode = () => {
               <p>{project.etat}</p> // Show the state as text if not in edit mode
             )}
           </div>
-          <div className="detail-item">
-  <label>Deadline</label>
-  {editMode ? (
-    <input
-      type="date"
-      name="date_fin"
-      value={editedProject.date_fin ? new Date(editedProject.date_fin).toISOString().split('T')[0] : ''}
-      onChange={handleInputChange}
-    />
-  ) : (
-    <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
-  )}
-</div>
 
+          {/* End Date (Deadline) */}
+          <div className="detail-item">
+            <label>Deadline</label>
+            {editMode ? (
+              <input
+                type="date"
+                name="date_fin"
+                value={editedProject.date_fin ? new Date(editedProject.date_fin).toISOString().split('T')[0] : ''}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
+            )}
+          </div>
         </div>
       </div>
+
+
+
 
       {/* Team Members Section */}
       <div className="team-details">
@@ -448,9 +456,10 @@ const toggleEditMode = () => {
       
       {/* Edit and Delete Buttons */}
       <div className="button-container">
-        <button className="modify-button" onClick={toggleEditMode}>
+      <button className="modify-button" onClick={toggleEditMode}>
           {editMode ? "Save" : "Edit"}
         </button>
+
         
       </div>
 

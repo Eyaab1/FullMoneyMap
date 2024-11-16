@@ -41,7 +41,6 @@ const Freelancers = () => {
     fetchFreelancers();
   }, []);
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewFreelancer((prevState) => ({
@@ -70,6 +69,27 @@ const Freelancers = () => {
       setNewFreelancer({ nom: '', prenom: '', specialty: '' }); // Reset form fields
     } catch (err) {
       setError('Failed to add freelancer');
+    }
+  };
+
+  const removeFreelancer = async (freelancerId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Unauthorized access - No token found');
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5000/api/freelancers/${freelancerId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setFreelancers(freelancers.filter(freelancer => freelancer.id !== freelancerId));
+    } catch (err) {
+      setError('Failed to delete freelancer');
     }
   };
 
@@ -119,7 +139,7 @@ const Freelancers = () => {
                   <option value="Graphic Designer">Graphic Designer</option>
                   <option value="Mobile Developer">Mobile Developer</option>
                   <option value="Data Analyst">Data Analyst</option>
-                  <option value="Social Media Manager">Social Media Manager</option>
+                  <option value="Social Media freelancer">Social Media freelancer</option>
                 </select>
               </div>
               <button className="add-project-btn" onClick={handleAddFreelancer}>
@@ -139,6 +159,9 @@ const Freelancers = () => {
                   {freelancer.prenom} {freelancer.nom}
                 </p>
                 <p>{freelancer.specialty}</p>
+                <p className="remove-icon" onClick={() => removeFreelancer(freelancer.id)}>
+              x
+            </p> 
               </div>
             ))}
           </div>

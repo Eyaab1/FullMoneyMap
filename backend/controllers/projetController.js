@@ -177,13 +177,16 @@ exports.getProjetEtat = async (req, res) => {
         res.status(500).json({ error: 'Error fetching project status' });
     }
 };
-
 exports.updateProjet = async (req, res) => {
     const { id } = req.params;
     const { nom, date_debut, date_fin, budget, etat, id_chef } = req.body;
 
     if (!nom || !date_debut || !date_fin || !budget || !etat || !id_chef) {
         return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (isNaN(budget) || parseFloat(budget) <= 0) {
+        return res.status(400).json({ error: 'Budget must be a positive number' });
     }
 
     try {
@@ -197,16 +200,16 @@ exports.updateProjet = async (req, res) => {
 
         const totalBalance = result.rows[0].total_balance;
 
-        if (budget > totalBalance) {
+        if (parseFloat(budget) > totalBalance) {
             return res.status(400).json({ error: 'Budget exceeds the available balance of revenues minus expenses' });
         }
 
-        const updateResult = await pool.query(
-            `UPDATE "Projets" 
-            SET nom = $1, date_debut = $2, date_fin = $3, budget = $4, etat = $5, id_chef = $6 
-            WHERE id = $7 RETURNING *`,
-            [nom, date_debut, date_fin, budget, etat, id_chef, id]
-        );
+        const updateResult = await pool.query(`
+            UPDATE "Projets" 
+            SET nom = '$1', date_debut = '$2', date_fin = '$3', budget = '$4', etat = '$5', id_chef = '$6'
+            WHERE id = $7
+            RETURNING *
+        `, [nom, date_debut, date_fin, budget, etat, id_chef, id]);
 
         if (updateResult.rows.length > 0) {
             res.status(200).json(updateResult.rows[0]);
@@ -214,10 +217,11 @@ exports.updateProjet = async (req, res) => {
             res.status(404).json({ error: 'Project not found' });
         }
     } catch (err) {
-        console.error(err);
+        console.error('Error updating project:', err); 
         res.status(500).json({ error: 'Error updating project' });
     }
 };
+
 
 exports.getProjetWithManager = async (req, res) => {
     const { id } = req.params;
