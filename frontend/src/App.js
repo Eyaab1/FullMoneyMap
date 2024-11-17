@@ -124,7 +124,7 @@ const App = () => {
           
           
           {/*admin routeq*/}          
-          <Route path='/admin' element={isAuthenticated ? <DashboardA/> : <Navigate to="/login" />}/>
+          <Route path='/admin' element={isAuthenticated ? <DashboardA logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/project/:id" element={<SelectedProject /> } />
           <Route path="/financial" element={<Financiers /> } />
           <Route path="/managers" element={<Managers /> } />

@@ -34,7 +34,7 @@ const TransactionHistory = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
+  
         const transactionsWithDetails = await Promise.all(
           response.data.map(async (transaction) => {
             try {
@@ -48,8 +48,8 @@ const TransactionHistory = () => {
                 }
               );
               transaction.addedByName = userResponse.data.nom;
-
-              // Fetch project name if transaction type is revenu
+  
+              // Fetch project name and description if transaction type is revenu
               if (transaction.type === 'revenu' && transaction.revenue_project_id) {
                 const projectResponse = await axios.get(
                   `http://localhost:5000/api/projects/projet/${transaction.revenue_project_id}`,
@@ -60,11 +60,16 @@ const TransactionHistory = () => {
                   }
                 );
                 transaction.projectName = projectResponse.data.nom;
+              transaction.Description = transaction.description || 'No description available'; // Fallback if no description
               }
+  
+            // Fallback for transaction description if not available
             } catch (err) {
               console.error('Error fetching details:', err);
               transaction.addedByName = transaction.addedByName || 'Unknown';
               transaction.projectName = transaction.projectName || 'Unknown';
+            transaction.projectDescription = transaction.projectDescription || 'No description available'; // Fallback here too
+            transaction.description = transaction.description || 'No description available';  // Ensure description exists
             }
             return transaction;
           })
@@ -122,103 +127,45 @@ const TransactionHistory = () => {
           </button>
         </div>
 
-        <table className="transaction-table">
-          <thead>
-            <tr>
-              <th>Transaction</th>
-              <th>Source</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Added By</th>
-              <th>Type</th>
+      <table className="transaction-table">
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Source du transaction</th>
+            
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Added By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredTransactions.map((transaction) => (
+            <tr key={transaction.id}>
+              <td>
+                {transaction.type === 'revenu' ? 'Income' : 'Outcome'}
+              </td>
+              <td>
+                {transaction.type === 'revenu' && transaction.projectName ? (
+                  `Project: ${transaction.projectName} - ${transaction.Description}`
+                ) : (
+                  capitalizeFirstLetter(transaction.description)
+                )}
+              </td>
+              <td>
+                {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
+              </td>
+              <td>
+                {new Date(transaction.date).toLocaleDateString('fr-TN', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
+              </td>
+              <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
             </tr>
-          </thead>
-          <tbody>
-            {filteredTransactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td>{capitalizeFirstLetter(transaction.description)}</td>
-                <td>
-                  {transaction.type === 'depense' && transaction.depense_category
-                    ? capitalizeFirstLetter(transaction.depense_category)
-                    : transaction.type === 'revenu' && transaction.projectName
-                    ? transaction.projectName
-                    : ''}
-                </td>
-                <td>
-                  {new Intl.NumberFormat('fr-TN', {
-                    style: 'currency',
-                    currency: 'TND',
-                  }).format(transaction.amount)}
-                </td>
-                <td>
-                  {new Date(transaction.date).toLocaleDateString('fr-TN', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })}
-                </td>
-                <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
-                <td>{transaction.type === 'revenu' ? 'Income' : 'Outcome'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="filter-card">
-        <h4>Filters</h4>
-        <div className="search-bar">
-          <label>Search</label>
-          <input
-            type="text"
-            placeholder="Search by description..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
-        <div className="sort-dropdown">
-          <label>Sort By</label>
-          <select value={sortOption} onChange={handleSortChange}>
-            <option value="">Select an option</option>
-            <option value="dateAsc">Date (Ascending)</option>
-            <option value="managerAsc">Manager (A-Z)</option>
-          </select>
-        </div>
-        <div className="type-filter-dropdown">
-          <label>Type</label>
-          <select value={typeFilter} onChange={handleTypeFilterChange}>
-            <option value="">All</option>
-            <option value="income">Income</option>
-            <option value="outcome">Outcome</option>
-          </select>
-        </div>
-        <div className="project-filter-dropdown">
-          <label>Project</label>
-          <select value={projectFilter} onChange={handleProjectFilterChange}>
-            <option value="">All</option>
-            {[
-              ...new Set(transactions.map((t) => t.projectName).filter(Boolean)),
-            ].map((project, idx) => (
-              <option key={idx} value={project}>
-                {project}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="category-filter-dropdown">
-          <label>Category</label>
-          <select value={categoryFilter} onChange={handleCategoryFilterChange}>
-            <option value="">All</option>
-            {[
-              ...new Set(transactions.map((t) => t.depense_category).filter(Boolean)),
-            ].map((category, idx) => (
-              <option key={idx} value={category}>
-                {capitalizeFirstLetter(category)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

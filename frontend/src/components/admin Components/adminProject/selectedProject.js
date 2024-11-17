@@ -12,13 +12,22 @@ const SelectedProject = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [editedProject, setEditedProject] = useState({});
-  const [showModal, setShowModal] = useState(false);
   const [showAddFreelancerModal, setShowAddFreelancerModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState('');
   const [salary, setSalary] = useState('');
+  
+    const [editedProject, setEditedProject] = useState({
+      project_name: "",
+      budget: "",
+      date_debut: "",
+      date_fin: "",
+      etat: "",
+      manager_id: "",
+    });
+
+    
+    
 
   const handleSalaryChange = (e, index) => {
     const updatedFreelancers = [...freelancer];
@@ -135,59 +144,130 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
     fetchAllFreelancers();
   }, []);
   
-  // Filter freelancers not already working on the project
-  useEffect(() => {
-    // IDs of freelancers already on the project
-    const currentFreelancerIds = freelancer.map(f => f.id);
-    
-    // Filter to include only freelancers not in the project
-    const availableFreelancers = allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
-    setFilteredFreelancers(availableFreelancers);
-  }, [allFreelancers, freelancer]);
-  
-  // Open modal for adding a freelancer
-  const handleShowAddFreelancerModal = () => setShowAddFreelancerModal(true);
-  const handleShowDeleteModal = () => setShowDeleteModal(true);
-  
-  // Add a freelancer to the project
-  const handleAddFreelancer = () => {
-    if (selectedFreelancer && salary) {
-      const newFreelancer = allFreelancers.find(f => f.id === selectedFreelancer);
-      if (newFreelancer) {
-        setFreelancer([...freelancer, { ...newFreelancer, salary }]);
-        setShowAddFreelancerModal(false);
-        setSelectedFreelancer('');
-        setSalary('');
+// Filter freelancers not already working on the project
+const filterAvailableFreelancers = () => {
+  const currentFreelancerIds = freelancer.map(f => f.id);
+  return allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
+};
+
+// Open modal for adding a freelancer
+const handleShowAddFreelancerModal = () => {
+  setFilteredFreelancers(filterAvailableFreelancers());
+  setShowAddFreelancerModal(true);
+};
+
+// Add a freelancer to the project
+const handleAddFreelancer = async () => {
+  if (selectedFreelancer && salary) {
+    const newFreelancer = allFreelancers.find(f => f.id === parseInt(selectedFreelancer));
+    if (newFreelancer) {
+      const data = {
+        id_freelancer: newFreelancer.id,
+        id_projet: id,
+        salaire: salary,
+      };
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:5000/api/salaires/add', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 201) {
+          setFreelancer([...freelancer, { ...newFreelancer, salaire: salary }]);
+          setShowAddFreelancerModal(false);
+          setSelectedFreelancer(''); 
+          setSalary('');
+        }
+      } catch (err) {
+        setError('Failed to add freelancer salary');
+        console.error('Error adding freelancer salary:', err);
       }
     }
-  };
+  } else {
+    alert('Please select a freelancer and enter a salary');
+  }
+};
 
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
+useEffect(() => {
+  setEditedProject(project); 
+}, [project]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedProject((prevProject) => ({
-      ...prevProject,
-      [name]: value,
-    }));
-  };
 
-  // Modal functions
-  const openDeleteModal = () => {
-    setShowModal(true);
-  };
 
-  const closeDeleteModal = () => {
-    setShowModal(false);
-  };
+const toggleEditMode = () => {
+  if (editMode) {
+    updateProject();
+  } else {
+    setEditMode(true); 
+  }
+};
 
-  const confirmDelete = () => {
-    alert("Project deleted"); // Replace this with the actual delete logic, e.g., API call to delete project
-    setShowModal(false); // Close modal after deletion
-  };
+
+
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setEditedProject((prevProject) => ({
+    ...prevProject,
+    [name]: value,
+  }));
+};
+const updateProject = async () => {
+  console.log("Updating project...");
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setError("Unauthorized access - No token found");
+    return;
+  }
+
+  const { project_name, budget, date_debut, date_fin, etat, manager_id } = editedProject;
+
+  // Validate required fields
+  if (!project_name || !budget || !date_debut || !date_fin || !etat || !manager_id) {
+    setError("All fields are required");
+    return;
+  }
+
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/projects/edit/${project.id}`,
+      {
+        project_name,
+        budget,
+        date_debut,
+        date_fin,
+        etat,
+        manager_id
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      console.log("Project updated successfully:", response.data);
+      setEditMode(false); // Exit edit mode after successful update
+    } else {
+      setError("Failed to update project");
+    }
+  } catch (err) {
+    if (err.response) {
+      setError(`Error: ${err.response.data.error || "Failed to update project"}`);
+      console.error("Error response:", err.response.data);
+    } else {
+      setError("Network error");
+      console.error("Error:", err);
+    }
+  }
+};
 
 
   
@@ -226,7 +306,8 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
       {/* Editable Project Details */}
       <div className="project-details">
         <div className="details-left">
-        <div className="detail-item">
+          {/* Project Manager */}
+          <div className="detail-item">
             <label>Project Manager</label>
             {editMode ? (
               <select
@@ -241,32 +322,36 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
                 ))}
               </select>
             ) : (
-              <p>{project.manager_nom} {project.manager_prenom}</p> // Display as text when not editing
+              <p>
+                {project.manager_nom} {project.manager_prenom}
+              </p> // Display as text when not editing
             )}
           </div>
-          <div className="detail-item">
-  <label>Start Date</label>
-  {editMode ? (
-    <input
-      type="date"
-      name="date_debut"
-      value={editedProject.date_debut ? new Date(editedProject.date_debut).toISOString().split('T')[0] : ''}
-      onChange={handleInputChange}
-    />
-  ) : (
-    <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
-  )}
-</div>
 
+          {/* Start Date */}
+          <div className="detail-item">
+            <label>Start Date</label>
+            {editMode ? (
+              <input
+                type="date"
+                name="date_debut"
+                value={editedProject.date_debut ? new Date(editedProject.date_debut).toISOString().split('T')[0] : ''}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <p>{project.date_debut ? new Date(project.date_debut).toISOString().split('T')[0] : 'N/A'}</p>
+            )}
+          </div>
         </div>
 
         <div className="details-right">
-        <div className="detail-item">
+          {/* Project State */}
+          <div className="detail-item">
             <label>State</label>
             {editMode ? (
               <select
                 name="etat"
-                value={editedProject.etat}
+                value={editedProject.etat || ''}
                 onChange={handleInputChange}
               >
                 <option value="en cours">En cours</option>
@@ -276,22 +361,26 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
               <p>{project.etat}</p> // Show the state as text if not in edit mode
             )}
           </div>
-          <div className="detail-item">
-  <label>Deadline</label>
-  {editMode ? (
-    <input
-      type="date"
-      name="date_fin"
-      value={editedProject.date_fin ? new Date(editedProject.date_fin).toISOString().split('T')[0] : ''}
-      onChange={handleInputChange}
-    />
-  ) : (
-    <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
-  )}
-</div>
 
+          {/* End Date (Deadline) */}
+          <div className="detail-item">
+            <label>Deadline</label>
+            {editMode ? (
+              <input
+                type="date"
+                name="date_fin"
+                value={editedProject.date_fin ? new Date(editedProject.date_fin).toISOString().split('T')[0] : ''}
+                onChange={handleInputChange}
+              />
+            ) : (
+              <p>{project.date_fin ? new Date(project.date_fin).toISOString().split('T')[0] : 'N/A'}</p>
+            )}
+          </div>
         </div>
       </div>
+
+
+
 
       {/* Team Members Section */}
       <div className="team-details">
@@ -328,59 +417,53 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
 
       {/* Modal for adding freelancer */}
       {showAddFreelancerModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Add Freelancer</h3>
-            <select
-  value={selectedFreelancer}
-  onChange={(e) => setSelectedFreelancer(e.target.value)}
->
-  <option value="">Select Freelancer</option>
-  {filteredFreelancers.map((freelancer) => (
-    <option key={freelancer.id} value={freelancer.id}>
-      {freelancer.prenom} {freelancer.nom}
-    </option>
-  ))}
-  </select>
-
-            <input
-              type="number"
-              placeholder="Enter salary"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-            />
-            <div className="button-container">
-            <button className="modify-button" onClick={handleAddFreelancer}>Add</button>
-            <button className="modify-button delete-button" onClick={() => setShowAddFreelancerModal(false)}>Cancel</button>
-          </div>
-          </div>
-
-        </div>
-      )}
-
+  <div className="modal">
+    <div className="modal-content">
+      <h3>Add Freelancer</h3>
+      <select
+        value={selectedFreelancer}
+        onChange={(e) => setSelectedFreelancer(e.target.value)}
+      >
+        <option value="">Select Freelancer</option>
+        {filteredFreelancers.map((freelancer) => (
+          <option key={freelancer.id} value={freelancer.id}>
+            {freelancer.prenom} {freelancer.nom}
+          </option>
+        ))}
+      </select>
+      <input
+        type="number"
+        placeholder="Enter salary"
+        value={salary}
+        onChange={(e) => setSalary(e.target.value)}
+      />
+      <div className="button-container">
+        <button className="modify-button" onClick={handleAddFreelancer}>
+          Add
+        </button>
+        <button
+          className="modify-button delete-button"
+          onClick={() => setShowAddFreelancerModal(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
 
       
       {/* Edit and Delete Buttons */}
       <div className="button-container">
-        <button className="modify-button" onClick={toggleEditMode}>
+      <button className="modify-button" onClick={toggleEditMode}>
           {editMode ? "Save" : "Edit"}
         </button>
-        <button className="modify-button delete-button" onClick={openDeleteModal}>
-          Delete
-        </button>
+
+        
       </div>
 
-      {/* Delete Modal */}
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>Are you sure you want to delete this project?</p>
-            <button className="confirm-button" onClick={confirmDelete}>Yes</button>
-            <button className="cancel-button" onClick={closeDeleteModal}>No</button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

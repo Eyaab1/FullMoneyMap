@@ -33,10 +33,10 @@ async function startServer() {
 
     
     app.use('/api/utilisateurs',authenticate, utilisateurRoutes); 
-    app.use('/api/projects', authenticate, projetRoutes);
-    app.use('/api/transactions', authenticate, transactionRoutes);
-    app.use('/api/freelancers', authenticate, freelancerRoutes); 
-    app.use('/api/salaires', authenticate, salaireRoutes);
+    app.use('/api/projects',authenticate, projetRoutes);
+    app.use('/api/transactions',authenticate, transactionRoutes);
+    app.use('/api/freelancers',authenticate, freelancerRoutes); 
+    app.use('/api/salaires',authenticate, salaireRoutes);
 
     
     app.listen(PORT, () => {
