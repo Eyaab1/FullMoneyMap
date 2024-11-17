@@ -73,14 +73,15 @@ exports.addProjet = async (req, res) => {
                 COALESCE(SUM(CASE WHEN t.type = 'revenu' THEN t.amount ELSE 0 END), 0) -
                 COALESCE(SUM(CASE WHEN t.type = 'depense' THEN t.amount ELSE 0 END), 0) AS total_balance
             FROM "Transactions" t
-            WHERE t."addedBy" = $1
-        `, [id_chef]);
+            
+        `);
         
 
         const totalBalance = result.rows[0].total_balance;
+        console.log('Calculated totalBalance:', totalBalance);
 
         if (budget > totalBalance) {
-            return res.status(400).json({ error: 'Budget exceeds the available balance of revenues minus expenses' });
+            return res.status(400).json({ error: 'Budget exceeds the available balance Total Balance: ${totalBalance}, Requested Budget: ${budget}' });
         }
 
         const insertResult = await pool.query(

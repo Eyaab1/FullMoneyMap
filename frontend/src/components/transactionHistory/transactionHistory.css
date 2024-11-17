@@ -1,11 +1,13 @@
+
+
 .transaction-history {
   position: relative;
-  top: 80px;
-  width: 90%;
-  background-color: #ffffff;
+  top: 20px;
+  width: 75%; 
+  background-color: #f1f5f9;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   margin-top: 24px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -16,10 +18,14 @@
 }
 
 .transaction-history-container {
+  display: flex; /* Added flex for side-by-side layout */
+  justify-content: space-between;
+  gap: 16px; /* Space between history and filter card */
   padding: 24px;
   background-color: #f4f6f9;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 100%;
 }
 
 .transaction-header {
@@ -29,28 +35,18 @@
   margin-bottom: 16px;
 }
 
-.add-transaction-btn button {
-  margin-left: 12px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
+.add-transaction-btn {
   background-color: #007bff;
+  padding: 12px 18px; /* Adjusted for consistency */
+  border-radius: 10px;
+  border: none;
   color: #ffffff;
-  font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.transaction-buttons button:hover {
-  background-color: #0056b3;
-}
-
-.add-transaction-btn {
-  background-color: #28a745;
-}
-
 .add-transaction-btn:hover {
-  background-color: #218838;
+  background-color: #0056b3; /* Changed hover color to maintain consistency */
 }
 
 .transaction-table {
@@ -104,8 +100,64 @@
   border-color: #007bff;
 }
 
-.category-text {
-  font-size: 0.85em;
-  color: #777;
-  font-style: italic;
+/* New Styles for Filter Card */
+.filter-card {
+  width: 22%; /* Adjust width as needed */
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 70%;
+  margin-top:120px;
+}
+
+.filter-card h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.filter-card label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.filter-card select,
+.filter-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.95em;
+  transition: border-color 0.3s;
+}
+
+.filter-card select:focus,
+.filter-card input:focus {
+  border-color: #007bff;
+}
+
+.filter-card select option {
+  font-size: 0.95em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .transaction-history-container {
+    flex-direction: column; /* Stack elements on smaller screens */
+  }
+
+  .transaction-history {
+    width: 100%;
+  }
+
+  .filter-card {
+    width: 100%;
+    margin-top: 16px;
+  }
 }

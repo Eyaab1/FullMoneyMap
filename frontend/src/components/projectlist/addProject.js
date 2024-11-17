@@ -27,7 +27,7 @@ const AddProject = () => {
         }
         const fetchChefs = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/utilisateurs/all?role=chef de projet', {
+                const response = await fetch('http://localhost:5000/api/utilisateurs/role/chef de projet', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

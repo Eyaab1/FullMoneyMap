@@ -123,113 +123,101 @@ const AddTransaction = () => {
         <div className="page-container">
         <div className="add-transaction-container">
           <h3>Add Transaction</h3>
-          <form onSubmit={handleSubmit} className="add-transaction-form">
-            
+          <form className="add-transaction-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Added by</label>
+              <label htmlFor="addedBy">Added By</label>
               <input
                 type="text"
                 name="addedBy"
                 value={formData.addedBy}
                 onChange={handleChange}
-                placeholder="Enter your name" disabled
+                readOnly
               />
             </div>
-  
+
             <div className="form-group">
-              <label>Type</label>
+              <label htmlFor="type">Type</label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
+                required
               >
-                <option value="" disabled>Select a type</option>
+                <option value="">Select Type</option>
                 <option value="Income">Income</option>
-                <option value="Outcome">Outcome</option>
+                <option value="Expense">Expense</option>
               </select>
             </div>
-  
-            
-  
+
             <div className="form-group">
-              <label>Date</label>
+              <label htmlFor="date">Date</label>
               <input
                 type="date"
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
+                required
               />
             </div>
-  
+
             <div className="form-group">
-              <label>Amount</label>
+              <label htmlFor="amount">Amount</label>
               <input
                 type="number"
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
-                placeholder="Enter amount"
+                required
               />
             </div>
-  
+
             <div className="form-group">
-              <label>Description</label>
+              <label htmlFor="description">Description</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Enter description"
-              />
+                rows="3"
+                required
+              ></textarea>
             </div>
-            {formData.type === 'Income' && (
-  <div className="form-group">
-    <label>Project Name</label>
-    <select
-      name="projectName"
-      value={formData.projectName}
-      onChange={handleChange}
-    >
-      <option value="" disabled >Select a project</option>
-      {projects.map((projet) => (
-        <option key={projet.id} value={projet.nom}>
-          {projet.nom}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
-             {formData.type === 'Outcome' && (
+
             <div className="form-group">
-              <label>Category</label>
+              <label htmlFor="projectName">Project Name</label>
               <select
-                name="category"
-                value={formData.category}
+                name="projectName"
+                value={formData.projectName}
                 onChange={handleChange}
               >
-                <option value="">Select a category</option>
-                <option value="Salaires et rémunérations">
-                  Salaires et rémunérations
-                </option>
-                <option value="Frais administratifs">
-                  Frais administratifs
-                </option>
-                <option value="Marketing et publicité">
-                  Marketing et publicité
-                </option>
-                <option value="Technologie et logiciels">
-                  Technologie et logiciels
-                </option>
-                <option value="Frais de déplacement">
-                  Frais de déplacement
-                </option>
+                <option value="">Select Project</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.nom}>
+                    {project.nom}
+                  </option>
+                ))}
               </select>
             </div>
-          )}
 
-<div className="form-buttons">
-                        <Link to="/transactions"><button type="button" className="cancel-button">CANCEL</button></Link>
-                        <button type="submit" className="add-button">ADD</button>
-                    </div>
+            {formData.type === 'Expense' && (
+              <div className="form-group">
+                <label htmlFor="category">Category</label>
+                <input
+                  type="text"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+
+            <div className="form-buttons">
+            
+              <button type="submit" className="add-button">Add </button>
+              <Link to="/transactions">
+                <button type="button" className="cancel-button">Cancel</button>
+              </Link>
+            </div>
           </form>
         </div>
       </div>
