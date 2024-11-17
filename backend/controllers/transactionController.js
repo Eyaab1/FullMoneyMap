@@ -65,7 +65,7 @@ exports.addDepense = async (req, res) => {
 
 exports.addRevenu = async (req, res) => {
     const { amount, date, description, addedBy, id_projet } = req.body;
-    if (!amount || !date || !description || !addedBy || !id_projet) {
+    if (!amount || !date || !description || !addedBy ) {
         return res.status(400).json({ error: 'All fields are required' });
     }
     const client = await pool.connect();
@@ -80,7 +80,7 @@ exports.addRevenu = async (req, res) => {
         await client.query(
             `INSERT INTO "Revenues" (transaction_id, id_projet) 
             VALUES ($1, $2)`,
-            [transactionId, id_projet]
+            [transactionId, id_projet || null]
         );
         await client.query('COMMIT'); 
         res.status(201).json({ message: 'Revenue added successfully', transactionId });

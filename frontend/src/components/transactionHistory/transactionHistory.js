@@ -32,7 +32,7 @@ const TransactionHistory = () => {
             'Authorization': `Bearer ${token}`
           }
         });
-
+  
         const transactionsWithDetails = await Promise.all(response.data.map(async (transaction) => {
           try {
             // Fetch user details for addedBy
@@ -42,8 +42,8 @@ const TransactionHistory = () => {
               }
             });
             transaction.addedByName = userResponse.data.nom;
-
-            // Fetch project name if transaction type is revenu
+  
+            // Fetch project name and description if transaction type is revenu
             if (transaction.type === 'revenu' && transaction.revenue_project_id) {
               const projectResponse = await axios.get(`http://localhost:5000/api/projects/projet/${transaction.revenue_project_id}`, {
                 headers: {
@@ -51,11 +51,16 @@ const TransactionHistory = () => {
                 }
               });
               transaction.projectName = projectResponse.data.nom;
+              transaction.Description = transaction.description || 'No description available'; // Fallback if no description
             }
+  
+            // Fallback for transaction description if not available
           } catch (err) {
             console.error('Error fetching details:', err);
             transaction.addedByName = transaction.addedByName || 'Unknown';
             transaction.projectName = transaction.projectName || 'Unknown';
+            transaction.projectDescription = transaction.projectDescription || 'No description available'; // Fallback here too
+            transaction.description = transaction.description || 'No description available';  // Ensure description exists
           }
           return transaction;
         }));
@@ -69,6 +74,7 @@ const TransactionHistory = () => {
     };
     fetchTransactions();
   }, []);
+  
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
@@ -149,27 +155,21 @@ const TransactionHistory = () => {
             <th>Amount</th>
             <th>Date</th>
             <th>Added By</th>
-            <th>Type</th>
           </tr>
         </thead>
         <tbody>
           {filteredTransactions.map((transaction) => (
             <tr key={transaction.id}>
               <td>
-                {capitalizeFirstLetter(transaction.description)}
-                
+                {transaction.type === 'revenu' ? 'Income' : 'Outcome'}
               </td>
               <td>
-              
-                  {transaction.type === 'depense' && transaction.depense_category ? (
-                    `  ${capitalizeFirstLetter(transaction.depense_category)}`
-                  ) : transaction.type === 'revenu' && transaction.projectName ? (
-                    `  ${transaction.projectName}`
-                  ) : ''}
-                
+                {transaction.type === 'revenu' && transaction.projectName ? (
+                  `Project: ${transaction.projectName} - ${transaction.Description}`
+                ) : (
+                  capitalizeFirstLetter(transaction.description)
+                )}
               </td>
-
-              
               <td>
                 {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
               </td>
@@ -181,9 +181,6 @@ const TransactionHistory = () => {
                 })}
               </td>
               <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
-              <td>
-                {transaction.type === 'revenu' ? 'Income' : 'Outcome'}
-              </td>
             </tr>
           ))}
         </tbody>
