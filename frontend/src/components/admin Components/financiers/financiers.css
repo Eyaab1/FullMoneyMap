@@ -1,41 +1,179 @@
-.remove-icon {
-    font-size: 24px;
-    cursor: pointer;
-    color: black;
-    transition: color 0.3s ease;
+.financial-list {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.remove-icon:hover {
-    color: red;
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr;
+  padding: 15px 20px;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: bold;
+  color: #444;
+  text-transform: uppercase;
+  background-color: #f9f9f9;
+  border-radius: 12px 12px 0 0;
 }
-.add-financier-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-fields {
-    display: flex;
-    gap: 10px; /* Add some space between the fields */
-    margin-bottom: 15px; /* Add some space below the fields */
-  }
-  
-  .form-fields input {
-    flex: 1; /* Make each input take up equal space */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .add-project-btn {
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .add-project-btn:hover {
-    background-color: #45a049;
-  }
-  
+
+.list-item {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.table-header,
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 3fr 1fr;
+    padding: 15px;
+    text-align: start;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+.list-item:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.list-item:hover {
+  background-color: #f0f8ff;
+  transform: scale(1.01);
+}
+
+.list-item p {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.list-item .delete-btn {
+  justify-self: center;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+}
+
+.modal-content h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #e74c3c;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.form-fields input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-fields input:focus {
+  border-color: #007bff;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 45%;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.cancel-btn {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #ddd;
+  color: #000;
+  transform: translateY(-2px);
+}
