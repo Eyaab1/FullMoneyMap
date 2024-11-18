@@ -186,7 +186,6 @@ const Dashboard = ({ logout }) => {
       {/* Navbar */}
       <div className={styles.navbar}>
         <div className={styles.navbarLogo}>
-          <button onClick={handleGoBack} className={styles.goBackButton}>← </button>
           <h2>MoneyMap</h2>
         </div>
         <div

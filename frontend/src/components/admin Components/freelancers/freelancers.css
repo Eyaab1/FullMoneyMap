@@ -1,3 +1,75 @@
+/* navbar */
+.navbarAdmin {
+    position: relative;
+    display: inline-block;
+  }
+  /* Navbar styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    padding: 10px;
+    color: white;
+    height: 80px;
+    position: relative;  /* Ensure the navbar is positioned correctly */
+    z-index: 100; /* Ensure the navbar stays on top */
+    width: 100%;  /* Ensure the navbar spans the full width */
+  }
+  
+  .navbarLogo h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .navbarAdmin {
+    display: flex;
+    align-items: center;
+  }
+  
+  .adminText {
+    margin-right: 10px;
+  }
+  
+  .adminPhoto {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 200; /* Ensure the dropdown is above other content */
+  }
+  
+  .dropdownMenu button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .navbarAdmin:hover .dropdownMenu {
+    display: block;  /* Show the dropdown when hovered */
+  }
+  .goBackButton {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-right:40px ;
+  }
+  
 /* General Layout */
 .freelancer-list-container {
     padding: 20px;

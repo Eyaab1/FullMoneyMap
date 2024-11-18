@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './managers.css'; // Use this for the popup and styling
 import axios from 'axios';
+import adminPhoto from '../../../admin.png'; // Make sure to import admin photo
 import ConfirmModal from '../../confirm/confirm';  // Import the custom ConfirmModal
+import { useNavigate } from 'react-router-dom';
 
 const Managers = () => {
   const [managers, setManagers] = useState([]);
@@ -16,6 +18,18 @@ const Managers = () => {
     email: '',
     role: 'chef de projet',
   });
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  // Handle dropdown menu on hover
+  const handleMouseEnter = () => setShowDropdown(true);
+  const handleMouseLeave = () => setShowDropdown(false);
+
+  // Logout function
+  const logout = () => {
+    localStorage.removeItem('token');
+    navigate('/login'); 
+  };
 
   // Fetch managers
   useEffect(() => {
@@ -45,6 +59,7 @@ const Managers = () => {
     fetchManagers();
   }, []);
 
+  // Add new manager
   const handleAddManager = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -102,82 +117,111 @@ const Managers = () => {
     setShowConfirmModal(false); // Close confirm modal without deletion
   };
 
-  return (
-    <div className="project-list-container">
-      {/* Show the confirmation modal */}
-      {showConfirmModal && (
-        <ConfirmModal
-          message="Are you sure you want to delete this manager?"
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
+  // Go back button functionality
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
-      <div className="project-header">
-        <h3>Project Managers List</h3>
-        <div className="project-buttons">
-          <button className="add-project-btn" onClick={() => setShowModal(!showModal)}>
-            {showModal ? 'Cancel' : 'Add Manager'}
-          </button>
+  return (
+    <div>
+      {/* Navbar Section */}
+      <div className="navbar">
+        <div className="navbarLogo">
+          <h2>MoneyMap</h2>
+          <button onClick={handleGoBack} className="goBackButton">← </button>
+        </div>
+        <div
+          className="navbarAdmin"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <span className="adminText">Admin</span>
+          <img src={adminPhoto} alt="Admin" className="adminPhoto" />
+          {showDropdown && (
+            <div className="dropdownMenu">
+              <button onClick={logout} className="dropdownButton">Logout</button>
+            </div>
+          )}
         </div>
       </div>
 
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close-button" onClick={() => setShowModal(false)}>
-              &times;
-            </span>
-            <h4>Add New Project Manager</h4>
-            <div className="form-fields">
-              <input
-                type="text"
-                placeholder="First Name"
-                value={newManager.prenom}
-                onChange={(e) => setNewManager({ ...newManager, prenom: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={newManager.nom}
-                onChange={(e) => setNewManager({ ...newManager, nom: e.target.value })}
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={newManager.email}
-                onChange={(e) => setNewManager({ ...newManager, email: e.target.value })}
-              />
-            </div>
-            <div className="modal-actions">
-              <button className="save-btn" onClick={handleAddManager}>
-                Save
-              </button>
-              <button className="cancel-btn" onClick={() => setShowModal(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Managers List Section */}
+      <div className="project-list-container">
+        {/* Show the confirmation modal */}
+        {showConfirmModal && (
+          <ConfirmModal
+            message="Are you sure you want to delete this manager?"
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+          />
+        )}
 
-      <div className="project-table">
-        <div className="table-header">
-          <p>First name</p>
-          <p>Last Name</p>
-          <p>Email</p>
-          <p></p>
-        </div>
-        {managers.map((manager) => (
-          <div className="table-row" key={manager.id}>
-            <p>{manager.prenom}</p>
-            <p>{manager.nom}</p>
-            <p>{manager.email}</p>
-            <button className="delete-btn" onClick={() => removeManager(manager.id)}>
-              Delete
+        <div className="project-header">
+          <h3>Project Managers List</h3>
+          <div className="project-buttons">
+            <button className="add-project-btn" onClick={() => setShowModal(!showModal)}>
+              {showModal ? 'Cancel' : 'Add Manager'}
             </button>
           </div>
-        ))}
+        </div>
+
+        {showModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close-button" onClick={() => setShowModal(false)}>
+                &times;
+              </span>
+              <h4>Add New Project Manager</h4>
+              <div className="form-fields">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={newManager.prenom}
+                  onChange={(e) => setNewManager({ ...newManager, prenom: e.target.value })}
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={newManager.nom}
+                  onChange={(e) => setNewManager({ ...newManager, nom: e.target.value })}
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={newManager.email}
+                  onChange={(e) => setNewManager({ ...newManager, email: e.target.value })}
+                />
+              </div>
+              <div className="modal-actions">
+                <button className="save-btn" onClick={handleAddManager}>
+                  Save
+                </button>
+                <button className="cancel-btn" onClick={() => setShowModal(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="project-table">
+          <div className="table-header">
+            <p>First Name</p>
+            <p>Last Name</p>
+            <p>Email</p>
+            <p>Actions</p>
+          </div>
+          {managers.map((manager) => (
+            <div className="table-row" key={manager.id}>
+              <p>{manager.prenom}</p>
+              <p>{manager.nom}</p>
+              <p>{manager.email}</p>
+              <button className="delete-btn" onClick={() => removeManager(manager.id)}>
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
