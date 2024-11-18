@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import './projectList.css';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import './projectList.css';
+
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allEndedProjects, setAllEndedProjects] = useState([]);
+  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [heatmapData, setHeatmapData] = useState(null); // Heatmap data
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +33,23 @@ const ProjectList = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setProjects(response.data);
+
+        const projectsData = response.data;
+        const currentTime = new Date().getTime();
+        const updatedProjects = projectsData.map((project) => {
+          if (new Date(project.date_fin).getTime() < currentTime && project.etat !== 'Ended') {
+            project.etat = 'Ended';
+          }
+          return project;
+        });
+
+        const endedProjects = updatedProjects
+          .filter((project) => project.etat === 'Ended')
+          .sort((a, b) => new Date(b.date_fin) - new Date(a.date_fin));
+
+        setProjects(updatedProjects);
+        setAllEndedProjects(endedProjects);
+        generateHeatmapData(updatedProjects);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch projects');
@@ -36,6 +60,30 @@ const ProjectList = () => {
     fetchProjects();
   }, []);
 
+  // Function to generate heatmap data
+  const generateHeatmapData = (projects) => {
+    const statuses = ['Ongoing', 'Ended', 'Paused'];
+    const months = Array.from({ length: 12 }, (_, i) =>
+      new Date(0, i).toLocaleString('fr-FR', { month: 'long' })
+    );
+
+    const heatmapDataArray = months.map((_, monthIndex) =>
+      statuses.map((status) =>
+        projects.filter(
+          (project) =>
+            new Date(project.date_fin).getMonth() === monthIndex &&
+            project.etat === status
+        ).length
+      )
+    );
+
+    setHeatmapData({
+      statuses,
+      months,
+      heatmapDataArray,
+    });
+  };
+
   if (loading) {
     return <p>Loading projects...</p>;
   }
@@ -44,46 +92,110 @@ const ProjectList = () => {
     return <p>{error}</p>;
   }
 
-  return (
-    <div className="project-list-container">
-      <div className="project-header">
-        <h3>Project List</h3>
-        <div className="project-buttons">
-          <button className="view-all-btn">View All</button>
-          <button className="add-project-btn" onClick={() => navigate('/addProject')}>
-            Add Project
-          </button>
-        </div>
-      </div>
-      <div className="project-table">
-        <div className="table-header">
-          <p>Project Name</p>
-          <p>ID</p>
-          <p>Status</p>
-          <p>Project Manager</p>
-          <p>Deadline</p>
-          <p>Details</p>
-        </div>
-        {projects.map((project, index) => (
-          <div key={index} className="table-row">
-            <p>{project.nom}</p>
-            <p>{project.id}</p>
-            <p className={project.etat === 'Ongoing' ? 'status ongoing' : 'status'}>
-              {project.etat}
-            </p>
-            <p>{project.manager_nom} {project.manager_prenom}</p>
-            <p>{new Date(project.date_fin).toLocaleString('fr-FR', { 
-              year: 'numeric', month: 'long', day: 'numeric', 
-              hour: '2-digit', minute: '2-digit' 
-            })}</p>
-            <Link to={`/project/${project.id}`}>
-              <button className="details-button">Details</button>
-            </Link>
+
+    return (
+      <div className="allContainer">
+        <div className="project-list-container">
+          <div className="project-header">
+            <h3>Project List</h3>
+            <div className="project-buttons">
+              <button className="view-all-btn">View All</button>
+              <button className="add-project-btn" onClick={() => navigate('/addProject')}>
+                Add Project
+              </button>
+            </div>
           </div>
-        ))}
+          <div className="project-table">
+            <div className="table-header">
+              <p>Project Name</p>
+              <p>ID</p>
+              <p>Status</p>
+              <p>Project Manager</p>
+              <p>Deadline</p>
+              <p>Details</p>
+            </div>
+            {projects.map((project, index) => (
+              <div key={index} className="table-row">
+                <p>{project.nom}</p>
+                <p>{project.id}</p>
+                <p className={project.etat === 'Ongoing' ? 'status ongoing' : 'status'}>{project.etat}</p>
+                <p>{project.manager_nom} {project.manager_prenom}</p>
+                <p>{new Date(project.date_fin).toLocaleString('fr-FR', {
+                  year: 'numeric', month: 'long', day: 'numeric',
+                  hour: '2-digit', minute: '2-digit',
+                })}</p>
+                <Link to={`/project/${project.id}`}>
+                  <button className="details-button">Details</button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+    
+        <div className="right-side-container">
+          <h4>Ended Projects</h4>
+          <ul>
+            {allEndedProjects.slice(0, 3).map((project, index) => (
+              <li key={index}>
+                <div className="ended-project-card">
+                  <p className="ended-project-name">{project.nom}</p>
+                  <p className="ended-project-date">{new Date(project.date_fin).toLocaleDateString('fr-FR')}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <button className="view-all-btn2" onClick={() => setShowModal(true)}>View All</button>
+        </div>
+    
+        {showModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
+              <h4>All Ended Projects</h4>
+              <ul>
+                {allEndedProjects.map((project, index) => (
+                  <li key={index}>
+                    <div className="ended-project-card">
+                      <p className="ended-project-name">{project.nom}</p>
+                      <p className="ended-project-date">{new Date(project.date_fin).toLocaleDateString('fr-FR')}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+    
+        {/* Move heatmap here */}
+        {heatmapData && (
+          <div className="heatmap-container">
+            <h3>Heatmap: Projects by Month and Status</h3>
+            <Bar
+              data={{
+                labels: heatmapData.months,
+                datasets: heatmapData.statuses.map((status, index) => ({
+                  label: status,
+                  data: heatmapData.heatmapDataArray.map((row) => row[index]),
+                  backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(75, 192, 192, 0.6)'][index],
+                })),
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { position: 'top' },
+                  title: { display: true, text: 'Projects by Month and Status' },
+                },
+                scales: {
+                  x: { stacked: true },
+                  y: { stacked: true, beginAtZero: true },
+                },
+              }}
+            />
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+    
 };
 
 export default ProjectList;
