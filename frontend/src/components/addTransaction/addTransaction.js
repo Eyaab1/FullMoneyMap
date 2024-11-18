@@ -12,8 +12,8 @@ const AddTransaction = () => {
     description: '',
     projectName: '',
     category: '',
-    incomeSource: 'Project', // Default to project for income
-    descriptionInput: '', // For user-typed description when 'Other' is selected
+    incomeSource: 'Project', 
+    descriptionInput: '',
   });
   const [projects, setProjects] = useState([]);
 
@@ -54,33 +54,42 @@ const AddTransaction = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
-
+  
     if (!user) {
       console.error('User not found in localStorage');
       return;
     }
-
-    const project = formData.type === 'Income' && formData.incomeSource === 'Project'
-      ? projects.find((proj) => proj.nom === formData.projectName)
-      : null;
-
-    const url = formData.type === 'Income'
-      ? 'http://localhost:5000/api/transactions/revenu'
-      : 'http://localhost:5000/api/transactions/depense';
-
+  
+    const project =
+      formData.type === 'Income' && formData.incomeSource === 'Project'
+        ? projects.find((proj) => proj.nom === formData.projectName)
+        : null;
+  
+    const url =
+      formData.type === 'Income'
+        ? 'http://localhost:5000/api/transactions/revenu'
+        : 'http://localhost:5000/api/transactions/depense';
+  
+    const description =
+      formData.type === 'Income'
+        ? formData.incomeSource === 'Project'
+          ? formData.description // Description entered directly for project-based income
+          : `Source: ${formData.description}` // Prepend "Source: " for other income sources
+        : formData.description; // Outcome description is directly typed in
+  
     const payload = {
       amount: formData.amount,
       date: formData.date,
-      description: formData.incomeSource === 'Other' ? formData.descriptionInput : formData.description,
+      description, // Unified description logic
       addedBy: user.id,
       ...(formData.type === 'Income' && formData.incomeSource === 'Project'
-        ? { id_projet: project?.id }
-        : { category: formData.category }),
+        ? { id_projet: project?.id } // Add project ID if income is from a project
+        : { category: formData.category }), // Add category for outcomes
     };
-
+  
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -90,7 +99,7 @@ const AddTransaction = () => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Transaction added:', data);
@@ -107,6 +116,7 @@ const AddTransaction = () => {
       console.error('Error in form submission:', error);
     }
   };
+  
 
   return (
     <div className="page-container">
@@ -203,66 +213,56 @@ const AddTransaction = () => {
             </div>
           )}
 
-          {formData.type === 'Income' && formData.incomeSource === 'Project' && (
-            <div className="form-group">
-              <label>Project Name</label>
-              <select
-                name="projectName"
-                value={formData.projectName}
-                onChange={handleChange}
-              >
-                <option value="" disabled>Select a project</option>
-                {projects.map((projet) => (
-                  <option key={projet.id} value={projet.nom}>
-                    {projet.nom}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
-          <div className="form-group">
-            <label>Description</label>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Enter description"
-            />
-          </div>
+{formData.type === 'Income' && formData.incomeSource === 'Project' && (
+  <>
+    <div className="form-group">
+      <label>Project Name</label>
+      <select
+        name="projectName"
+        value={formData.projectName}
+        onChange={handleChange}
+      >
+        <option value="" disabled>Select a project</option>
+        {projects.map((projet) => (
+          <option key={projet.id} value={projet.nom}>
+            {projet.nom}
+          </option>
+        ))}
+      </select>
+    </div>
 
-          {formData.type === 'Income' && formData.incomeSource === 'Other' && (
-            <div className="form-group">
-              <label>Source</label>
-              <select
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-              >
-                <option value="" disabled>Select a source</option>
-                <option value="Client Payment">Client Payment</option>
-                <option value="Investment">Investment</option>
-                <option value="Grant or Funding">Grant or Funding</option>
-                <option value="Royalties">Royalties</option>
-                <option value="Partnership">Partnership</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          )}
+    <div className="form-group">
+      <label>Description</label>
+      <input
+        type="text"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        placeholder="Enter description"
+      />
+    </div>
+  </>
+)}
 
-          {formData.type === 'Income' && formData.incomeSource === 'Other' && formData.description === 'Other' && (
-            <div className="form-group">
-              <label>Type your source</label>
-              <input
-                type="text"
-                name="descriptionInput"
-                value={formData.descriptionInput}
-                onChange={handleChange}
-                placeholder="Type your custom source"
-              />
-            </div>
-          )}
+{formData.type === 'Income' && formData.incomeSource === 'Other' && (
+  <div className="form-group">
+    <label>Source</label>
+    <select
+      name="description"
+      value={formData.description}
+      onChange={handleChange}
+    >
+      <option value="" disabled>Select a source</option>
+      <option value="Client Payment">Client Payment</option>
+      <option value="Investment">Investment</option>
+      <option value="Grant or Funding">Grant or Funding</option>
+      <option value="Royalties">Royalties</option>
+      <option value="Partnership">Partnership</option>
+    </select>
+  </div>
+)}
+
 
           {formData.type === 'Outcome' && (
             <div className="form-group">

@@ -1,6 +1,4 @@
-
 const { DataTypes } = require('sequelize');
-
 module.exports = (sequelize) => {
     const Revenu = sequelize.define('Revenu', {
         id: {
@@ -13,7 +11,7 @@ module.exports = (sequelize) => {
         },
         id_projet: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'Projet', 
                 key: 'id',

@@ -99,7 +99,7 @@ const ProjectList = () => {
           <div className="project-header">
             <h3>Project List</h3>
             <div className="project-buttons">
-              <button className="view-all-btn">View All</button>
+
               <button className="add-project-btn" onClick={() => navigate('/addProject')}>
                 Add Project
               </button>
@@ -108,26 +108,29 @@ const ProjectList = () => {
           <div className="project-table">
             <div className="table-header">
               <p>Project Name</p>
-              <p>ID</p>
+            
               <p>Status</p>
               <p>Project Manager</p>
               <p>Deadline</p>
+              <p>Budget</p>
+              
               <p>Details</p>
             </div>
-            {projects.map((project, index) => (
+            {projects.filter((project) => project.etat === 'en cours')
+             .map((project, index) => (
               <div key={index} className="table-row">
-                <p>{project.nom}</p>
-                <p>{project.id}</p>
-                <p className={project.etat === 'Ongoing' ? 'status ongoing' : 'status'}>{project.etat}</p>
-                <p>{project.manager_nom} {project.manager_prenom}</p>
-                <p>{new Date(project.date_fin).toLocaleString('fr-FR', {
-                  year: 'numeric', month: 'long', day: 'numeric',
-                  hour: '2-digit', minute: '2-digit',
-                })}</p>
-                <Link to={`/project/${project.id}`}>
-                  <button className="details-button">Details</button>
-                </Link>
-              </div>
+              <p>{project.nom}</p>
+              <p className={project.etat === 'en cours' ? 'status ongoing' : 'status'}>On Going</p>
+              <p>{project.manager_nom} {project.manager_prenom}</p>
+              <p>{new Date(project.date_fin).toLocaleString('fr-FR', {
+                year: 'numeric', month: 'long', day: 'numeric'
+              })}</p> {/* Correct placement for Deadline */}
+              <p>{project.budget ? `${project.budget} dt` : 'N/A'}</p> {/* Correct placement for Budget */}
+              <Link to={`/project/${project.id}`}>
+                <button className="details-button">Details</button>
+              </Link>
+            </div>
+            
             ))}
           </div>
         </div>
@@ -139,7 +142,9 @@ const ProjectList = () => {
               <li key={index}>
                 <div className="ended-project-card">
                   <p className="ended-project-name">{project.nom}</p>
-                  <p className="ended-project-date">{new Date(project.date_fin).toLocaleDateString('fr-FR')}</p>
+                  <p className="ended-project-date">{new Date(project.date_fin).toLocaleString('fr-FR', {
+                year: 'numeric', month: 'long', day: 'numeric'
+              })}</p>
                 </div>
               </li>
             ))}
@@ -148,26 +153,36 @@ const ProjectList = () => {
         </div>
     
         {showModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
-              <h4>All Ended Projects</h4>
-              <ul>
-                {allEndedProjects.map((project, index) => (
-                  <li key={index}>
-                    <div className="ended-project-card">
-                      <p className="ended-project-name">{project.nom}</p>
-                      <p className="ended-project-date">{new Date(project.date_fin).toLocaleDateString('fr-FR')}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+  <div className="modal">
+    <div className="modal-content">
+      <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
+      <h4>All Ended Projects</h4>
+      <ul>
+        {allEndedProjects.map((project, index) => (
+          <li key={index}>
+            <div className="ended-project-card">
+              <p className="ended-project-name">{project.nom}</p>
+              <p className="ended-project-date">
+                {new Date(project.date_fin).toLocaleString('fr-FR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              {/* Add the Details button here */}
+              <Link to={`/project/${project.id}`}>
+                <button className="details-button">Details</button>
+              </Link>
             </div>
-          </div>
-        )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
     
         {/* Move heatmap here */}
-        {heatmapData && (
+        {/* {heatmapData && (
           <div className="heatmap-container">
             <h3>Heatmap: Projects by Month and Status</h3>
             <Bar
@@ -192,7 +207,7 @@ const ProjectList = () => {
               }}
             />
           </div>
-        )}
+        )} */}
       </div>
     );
     

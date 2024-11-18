@@ -162,10 +162,13 @@ exports.getUserIdByName = async (req, res) => {
 
 
 exports.changePassword = async (req, res) => {
-    const { email, oldPassword, newPassword } = req.body;
+    const { email, oldPassword, newPassword, confirmNewPassword } = req.body;
 
     try {
-        
+        if (newPassword !== confirmNewPassword) {
+            console.log('Password mismatch');
+            return res.status(400).json({ message: 'New passwords do not match' });
+        }
         const { rows } = await pool.query('SELECT * FROM "Utilisateurs" WHERE email = $1', [email]);
 
         if (rows.length === 0) {
@@ -179,11 +182,14 @@ exports.changePassword = async (req, res) => {
         }
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
         await pool.query('UPDATE "Utilisateurs" SET password = $1 WHERE email = $2', [hashedNewPassword, email]);
+
         res.json({ message: 'Password updated successfully' });
     } catch (error) {
+        console.error('Error changing password:', error);
         res.status(500).json({ message: 'Error changing password', error });
     }
 };
+
 
 exports.deleteUtilisateur = async (req, res) => {
     const { id } = req.params; 

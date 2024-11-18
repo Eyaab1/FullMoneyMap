@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './sideBar.css';
 
 const Sidebar = ({ logout }) => {
@@ -10,41 +10,57 @@ const Sidebar = ({ logout }) => {
       </div>
       <ul className="sidebar-menu">
         <li>
-          <Link to="/dashboard" className="menu-item">
+          <NavLink
+            to="/dashboard"
+            className="menu-item"
+            activeClassName="active-menu-item"
+          >
             <span className="icon">🏠</span>
             <span>Dashboard</span>
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link to="/transactions" className="menu-item">
+          <NavLink
+            to="/transactions"
+            className="menu-item"
+            activeClassName="active-menu-item"
+          >
             <span className="icon">💸</span>
             <span>Transaction</span>
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link to="/projects" className="menu-item">
+          <NavLink
+            to="/projects"
+            className="menu-item"
+            activeClassName="active-menu-item"
+          >
             <span className="icon">📁</span>
             <span>Projects</span>
-          </Link>
+          </NavLink>
         </li>
+        
         <li>
-          <Link to="/budget" className="menu-item">
-            <span className="icon">💰</span>
-            <span>Budget/Solde</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/settings" className="menu-item">
+          <NavLink
+            to="/settings"
+            className="menu-item"
+            activeClassName="active-menu-item"
+          >
             <span className="icon">⚙️</span>
             <span>Settings</span>
-          </Link>
+          </NavLink>
         </li>
         <li>
-        <Link to="/login" className="menu-item" onClick={logout}>
+          <NavLink
+            to="/login"
+            className="menu-item"
+            activeClassName="active-menu-item"
+            onClick={logout}
+          >
             <span className="icon"> 🚪 </span>
-            <span>Logout</span> 
-          </Link>
-          </li>
+            <span>Logout</span>
+          </NavLink>
+        </li>
       </ul>
     </div>
   );

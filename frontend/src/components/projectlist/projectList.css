@@ -203,7 +203,8 @@ width: 500px;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 110%;
+  padding: 20px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
@@ -214,9 +215,9 @@ width: 500px;
 
 .modal-content {
   background-color: #fff;
-  padding: 20px;
+  padding: 50px;
   border-radius: 10px;
-  width: 80%;
+  width: 100%;
   max-width: 600px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;

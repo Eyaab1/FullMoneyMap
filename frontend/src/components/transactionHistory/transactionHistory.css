@@ -1,31 +1,41 @@
 
+body {
+  overflow: hidden; /* Disable page scrolling */
+}
 
 .transaction-history {
   position: relative;
-  top: 20px;
+  top: 60px;
   width: 75%; 
   background-color: #f1f5f9;
   border-radius: 12px;
   padding: 24px;
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+  
   margin-top: 24px;
   transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+.table-container {
+  
+  max-height: 500px; /* Set the desired height for the scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ddd; /* Optional: Add a border around the table */
 }
 
 .transaction-history:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+ 
+ 
 }
 
 .transaction-history-container {
-  display: flex; /* Added flex for side-by-side layout */
+  display: flex; 
   justify-content: space-between;
-  gap: 16px; /* Space between history and filter card */
+  gap: 16px; 
   padding: 24px;
   background-color: #f4f6f9;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  height: 900px;
 }
 
 .transaction-header {
@@ -37,7 +47,7 @@
 
 .add-transaction-btn {
   background-color: #007bff;
-  padding: 12px 18px; /* Adjusted for consistency */
+  padding: 12px 18px;
   border-radius: 10px;
   border: none;
   color: #ffffff;
@@ -46,7 +56,7 @@
 }
 
 .add-transaction-btn:hover {
-  background-color: #0056b3; /* Changed hover color to maintain consistency */
+  background-color: #0056b3;
 }
 
 .transaction-table {
@@ -100,15 +110,14 @@
   border-color: #007bff;
 }
 
-/* New Styles for Filter Card */
 .filter-card {
-  width: 22%; /* Adjust width as needed */
-  padding: 16px;
+  width: 22%; 
+  padding: 13px;
   background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: 70%;
+  height: 60%;
   margin-top:120px;
 }
 

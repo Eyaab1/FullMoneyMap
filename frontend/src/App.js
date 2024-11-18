@@ -14,7 +14,7 @@ import SelectedProject from './components/admin Components/adminProject/selected
 import Financiers from './components/admin Components/financiers/financiers'
 import Managers from './components/admin Components/managers/managers'
 import Freelancers from './components/admin Components/freelancers/freelancers'
-
+import Setting from './components/setting/setting'
 import './App.css';
 import {jwtDecode} from 'jwt-decode';
 
@@ -22,7 +22,7 @@ const App = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const pathsWithSidebar = ['/dashboard', '/transactions','/projects'];
+  const pathsWithSidebar = ['/dashboard', '/transactions','/projects','/settings','addProject','addTransaction'];
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -115,12 +115,13 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
-          <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+          {/* <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} /> */}
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/transactions" element={isAuthenticated ? <TransactionHistory /> : <Navigate to="/login" />} />
           <Route path="/addTransaction" element={isAuthenticated ? <AddTransaction /> : <Navigate to="/login" />} />
           <Route path="/projects" element={isAuthenticated ? <ProjectList /> : <Navigate to="/login" />} />
           <Route path="/addProject" element={isAuthenticated ? <AddProject /> : <Navigate to="/login" />} />
+          <Route path="/settings" element={isAuthenticated ? <Setting /> : <Navigate to="/login" />} />
           
           
           {/*admin routeq*/}          

@@ -50,7 +50,7 @@ const NavBar = () => {
               return projectDate === todayDate || projectDate === yesterdayDate;
             });
 
-            console.log('Relevant Notifications:', relevantNotifications);
+            
             setNotifications(relevantNotifications);
 
             // Check if notifications need resetting
