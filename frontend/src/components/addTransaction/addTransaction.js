@@ -170,9 +170,10 @@ const AddTransaction = () => {
           </div>
 
           {formData.type === 'Income' && (
-            <div className="form-group">
-              <label>Is the income from a project?</label>
-              <div>
+            <div className="form-group full-width">
+            <label>Project related?</label>
+            <div className="income-source-options">
+              <div className="option">
                 <input
                   type="radio"
                   id="fromProject"
@@ -191,7 +192,7 @@ const AddTransaction = () => {
                 />
                 <label htmlFor="fromProject">Yes</label>
               </div>
-              <div>
+              <div className="option">
                 <input
                   type="radio"
                   id="otherSource"
@@ -211,6 +212,9 @@ const AddTransaction = () => {
                 <label htmlFor="otherSource">No</label>
               </div>
             </div>
+          </div>
+          
+          
           )}
 
 
