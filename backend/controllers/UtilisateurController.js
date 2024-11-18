@@ -228,11 +228,9 @@ exports.updateUtilisateur = async (req, res) => {
             hashedPassword = await bcrypt.hash(password, 10);
         }
 
-        
         let query = 'UPDATE "Utilisateurs" SET nom = $1, prenom = $2, email = $3, role = $4';
         const values = [nom, prenom, email, role];
 
-        
         if (hashedPassword) {
             query += ', password = $5';
             values.push(hashedPassword);

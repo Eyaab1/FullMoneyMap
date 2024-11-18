@@ -47,7 +47,6 @@ const TransactionHistory = () => {
         const response = await axios.get('http://localhost:5000/api/transactions/all', {
           headers: {
             'Authorization': `Bearer ${token}`
-
           }
         });
   
@@ -59,7 +58,6 @@ const TransactionHistory = () => {
                 'Authorization': `Bearer ${token}`,
               }
             });
-
             transaction.addedByName = userResponse.data.nom;
   
             // Fetch project name and description if transaction type is revenu
@@ -69,7 +67,6 @@ const TransactionHistory = () => {
                   'Authorization': `Bearer ${token}`,
                 }
               });
-
               transaction.projectName = projectResponse.data.nom;
               transaction.Description = transaction.description || 'No description available'; // Fallback if no description
             }
@@ -143,25 +140,75 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div className="transaction-history-container">
     <div className="transaction-history">
       <div className="transaction-header">
         <h3>Transaction History</h3>
-        <button className="add-transaction-btn" onClick={() => navigate('/addTransaction')}>
-          Add Transaction
-        </button>
+        <div className="transaction-controls">
+          {/* <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search.."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div> */}
+          <div className="sort-dropdown">
+            <label>Sort By </label>
+            <select value={sortOption} onChange={handleSortChange}>
+              <option value="">Select an option</option>
+              <option value="dateAsc">Date (Ascending)</option>
+              <option value="managerAsc">Project Manager (A-Z)</option>
+            </select>
+          </div>
+          <div className="type-filter-dropdown">
+            <label>Type</label>
+            <select value={typeFilter} onChange={handleTypeFilterChange}>
+              <option value="">All</option>
+              <option value="income">Income</option>
+              <option value="outcome">Outcome</option>
+            </select>
+          </div>
+          <button className="add-transaction-btn" onClick={() => navigate('/addTransaction')}>
+            Add Transaction
+          </button>
+        </div>
       </div>
-  
-      {/* Scrollable table container */}
-      <div className="table-container">
-        <table className="transaction-table">
-          <thead>
-            <tr>
-              <th>Transaction</th>
-              <th>Source</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Added By</th>
+
+      <table className="transaction-table">
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Source du transaction</th>
+            
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Added By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredTransactions.map((transaction) => (
+            <tr key={transaction.id}>
+              <td>
+                {transaction.type === 'revenu' ? 'Income' : 'Outcome'}
+              </td>
+              <td>
+                {transaction.type === 'revenu' && transaction.projectName ? (
+                  `Project: ${transaction.projectName} - ${transaction.Description}`
+                ) : (
+                  capitalizeFirstLetter(transaction.description)
+                )}
+              </td>
+              <td>
+                {new Intl.NumberFormat('fr-TN', { style: 'currency', currency: 'TND' }).format(transaction.amount)}
+              </td>
+              <td>
+                {new Date(transaction.date).toLocaleDateString('fr-TN', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
+              </td>
+              <td>{capitalizeFirstLetter(transaction.addedByName)}</td>
             </tr>
           </thead>
           <tbody>

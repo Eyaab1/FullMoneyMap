@@ -1,101 +1,130 @@
-.add-transaction-form {
-  max-width: 600px;
-  margin: 0 auto;
+/* Form Container */
+
+.add-transaction-container {
+  width: 700px;
   padding: 20px;
+}
+.add-transaction-form {
+  width: 650px;
+  padding: 20px;
+  margin: 0 auto;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
+.form-group.full-width {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+  max-width: 100%;
+  padding-top: 7px;
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 150px 100px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #007bff;
-  outline: none;
+.full-width label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.option{
+  display: flex;
+  grid-template-columns: 1fr 1fr;
 }
 
-textarea {
-  resize: vertical;
+.income-source-options {
+  display: flex;
+  align-items: center;
 }
+
+.income-source-options .option {
+  margin-right: 20px;
+}
+
+.income-source-options input[type="radio"] {
+  margin-right: 5px;
+  margin-bottom: 15px;
+
+}
+
+.income-source-options label {
+  margin-top: 2px;
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+}
+
+
+.income-source-options input[type="radio"] {
+  margin-right: 5px;
+}
+
+.income-source-options label {
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Styling for buttons */
 .form-buttons {
   display: grid;
-  grid-template-columns: 1fr 1Fr;
-  grid-template-rows: 1fr 1Fr ;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
-
-
-.cancel-button {
-  width: 150px;
-  background-color: #28a745;
-  position: relative;
-  top :-10px;
-  color: white;
+.submit-button{
+  margin-top: 12px;
+}
+.cancel-button,
+.submit-button {
+  width: 100%;
+  height: 50px;
+  padding: 14px;
   border: none;
-  padding: 10px ;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  text-align: center; 
-}
-.add-button{
-  width: 150px;
-  height: 38px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px ;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  text-align: center; 
-}
-
-.add-button {
-  background-color: #28a745;
+  font-size: 18px;
+  color: #f9f9f9;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .cancel-button {
   background-color: #dc3545;
 }
 
-.add-button:hover {
-  background-color: #218838;
+.submit-button {
+  background-color: #28a745;
 }
 
 .cancel-button:hover {
   background-color: #c82333;
+  transform: translateY(-2px);
 }
 
+.submit-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.cancel-button:active,
+.submit-button:active {
+  transform: translateY(0);
+}
+
+
+/* Mobile responsiveness */
 @media (max-width: 480px) {
   .form-buttons {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
-  .form-buttons button {
-    width: 100%;
-    margin-bottom: 10px;
+  .form-row {
+    flex-direction: column;
   }
 }

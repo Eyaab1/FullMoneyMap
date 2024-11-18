@@ -1,0 +1,190 @@
+/* navbar */
+.navbarAdmin {
+    position: relative;
+    display: inline-block;
+  }
+  /* Navbar styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    padding: 10px;
+    color: white;
+    height: 80px;
+    position: relative;  /* Ensure the navbar is positioned correctly */
+    z-index: 100; /* Ensure the navbar stays on top */
+    width: 100%;  /* Ensure the navbar spans the full width */
+  }
+  
+  .navbarLogo h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .navbarAdmin {
+    display: flex;
+    align-items: center;
+  }
+  
+  .adminText {
+    margin-right: 10px;
+  }
+  
+  .adminPhoto {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 200; /* Ensure the dropdown is above other content */
+  }
+  
+  .dropdownMenu button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .navbarAdmin:hover .dropdownMenu {
+    display: block;  /* Show the dropdown when hovered */
+  }
+  .goBackButton {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-right:40px ;
+  }
+  
+/* General Layout */
+.freelancer-list-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 70%;
+    margin-left: 15%;
+}
+
+.freelancer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-freelancer-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* Table Layout */
+.freelancer-table {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.table-header,
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 3fr 1fr;
+    padding: 15px;
+    text-align: start;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-content h4 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.form-fields input,
+.form-fields select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Save & Cancel Buttons */
+.save-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+}
+
+.cancel-btn {
+    background-color: #f8f9fa;
+    color: #333;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
