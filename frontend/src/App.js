@@ -115,7 +115,7 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path="/login" element={<Login onLogin={login} />} />
-          {/* <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} /> */}
+          <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/transactions" element={isAuthenticated ? <TransactionHistory /> : <Navigate to="/login" />} />
           <Route path="/addTransaction" element={isAuthenticated ? <AddTransaction /> : <Navigate to="/login" />} />

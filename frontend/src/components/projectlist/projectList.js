@@ -95,7 +95,7 @@ const ProjectList = () => {
 
     return (
       <div className="allContainer">
-        <div className="project-list-container">
+        <div className="project-list-containerProject">
           <div className="project-header">
             <h3>Project List</h3>
             <div className="project-buttons">
@@ -105,26 +105,22 @@ const ProjectList = () => {
               </button>
             </div>
           </div>
-          <div className="project-table">
-            <div className="table-header">
+          <div className="project-tableProject">
+            <div className="table-headerProject">
               <p>Project Name</p>
-            
               <p>Status</p>
               <p>Project Manager</p>
               <p>Deadline</p>
               <p>Budget</p>
-              
               <p>Details</p>
             </div>
             {projects.filter((project) => project.etat === 'en cours')
              .map((project, index) => (
-              <div key={index} className="table-row">
+              <div key={index} className="table-rowProject">
               <p>{project.nom}</p>
               <p className={project.etat === 'en cours' ? 'status ongoing' : 'status'}>On Going</p>
               <p>{project.manager_nom} {project.manager_prenom}</p>
-              <p>{new Date(project.date_fin).toLocaleString('fr-FR', {
-                year: 'numeric', month: 'long', day: 'numeric'
-              })}</p> {/* Correct placement for Deadline */}
+              <p>{new Date(project.date_fin).toLocaleString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'  })}</p> {/* Correct placement for Deadline */}
               <p>{project.budget ? `${project.budget} dt` : 'N/A'}</p> {/* Correct placement for Budget */}
               <Link to={`/project/${project.id}`}>
                 <button className="details-button">Details</button>
@@ -137,7 +133,7 @@ const ProjectList = () => {
     
         <div className="right-side-container">
           <h4>Ended Projects</h4>
-          <ul>
+          <ul className="listul">
             {allEndedProjects.slice(0, 3).map((project, index) => (
               <li key={index}>
                 <div className="ended-project-card">
@@ -153,9 +149,9 @@ const ProjectList = () => {
         </div>
     
         {showModal && (
-  <div className="modal">
-    <div className="modal-content">
-      <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
+  <div className="modalProject">
+    <div className="modal-contentProject">
+      <span className="close-button1" onClick={() => setShowModal(false)}>&times;</span>
       <h4>All Ended Projects</h4>
       <ul>
         {allEndedProjects.map((project, index) => (

@@ -71,21 +71,21 @@
   }
   
 /* General Layout */
-.project-list-container {
+.project-list-container1 {
     padding: 20px;
     font-family: Arial, sans-serif;
     width: 70%;
     margin-left: 15%;
   }
   
-  .project-header {
+  .project-header1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
   }
   
-  .add-project-btn {
+  .add-project-btn1 {
     background-color: #007bff;
     color: white;
     padding: 10px 20px;
@@ -95,15 +95,15 @@
     cursor: pointer;
   }
   
-  .project-table {
+  .project-table1 {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
   }
   
-  .table-header,
-  .table-row {
+  .table-header1,
+  .table-row1 {
       display: grid;
       grid-template-columns: 2fr 2fr 3fr 1fr;
       padding: 15px;
@@ -112,7 +112,7 @@
   }
   
   
-  .delete-btn {
+  .delete-btn1 {
     background-color: #e74c3c;
     color: white;
     padding: 8px 16px;
@@ -122,7 +122,7 @@
   }
   
   /* Modal Styles */
-  .modal {
+  .modal1 {
     position: fixed;
     top: 0;
     left: 0;
@@ -134,7 +134,7 @@
     align-items: center;
   }
   
-  .modal-content {
+  .modal-content1 {
     background: #ffffff;
     padding: 30px;
     border-radius: 10px;

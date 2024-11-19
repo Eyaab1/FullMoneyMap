@@ -202,7 +202,7 @@ const Freelancers = () => {
         )}
 
         <div className="freelancer-table">
-          <div className="table-header">
+          <div className="table-headerFreelancer">
             <p>First Name</p>
             <p>Last Name</p>
             <p>Specialty</p>

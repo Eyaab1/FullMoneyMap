@@ -197,7 +197,7 @@ const Financiers = () => {
         )}
 
         <div className="project-table">
-          <div className="table-header">
+          <div className="table-headerFinancier">
             <p>First name</p>
             <p>Last Name</p>
             <p>Email</p>

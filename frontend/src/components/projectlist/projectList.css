@@ -1,32 +1,52 @@
-/* Project List Container */
-.allContainer {
-  /* display: flex;
-  flex-direction: column;
-  gap: 20px; */
-}
-.project-list-container {
-  background-color: #f1f5f9; 
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin: 10px ;
-  max-width: 1200px;
-  position: absolute;
-  top :100px;
-  width: 60%;
-  flex: 1;
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
 
-.project-header {
-  display: flex;
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Project List Container */
+.allContainer {
+  display: grid;
+  grid-template-columns: 5fr 2fr;
+  gap: 20px;
+  width: 100%;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+/* Main Project List */
+.project-list-containerProject {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.table-headerProject {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1Fr 1Fr;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 10px 0;
+  border-bottom: 2px solid #e9ecef;
+  width: 100%;
 }
 
-.project-header h3 {
-  color: #333;
+.table-headerProject h3 {
+  color: #007bff;
   font-size: 24px;
+  font-weight: 700;
 }
 
 .project-buttons button {
@@ -41,33 +61,34 @@
   transition: background-color 0.3s;
 }
 
-.project-buttons .view-all-btn {
-  background-color: #6c757d; 
-  
-}
-
 .project-buttons button:hover {
   background-color: #0056b3;
 }
 
-/* Project Table */
-.project-table {
-  width: 100%;
-  border-spacing: 0;
+.project-buttons .view-all-btn {
+  background-color: #6c757d;
 }
 
-.table-header,
-.table-row {
+.project-buttons .view-all-btn:hover {
+  background-color: #495057;
+}
+
+/* Table Styles */
+.table-headerProject,
+.table-rowProject {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr 1.5fr 1fr;
+  grid-template-columns: repeat(6, 1fr); /* Ensure six equal columns */
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
 
-.table-header {
-  background-color: #e9ecef;
-  font-weight: 600;
-  color: #495057;
+.table-headerProject p,
+.table-rowProject p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding: 5px;
 }
 
 .table-row {
@@ -85,13 +106,15 @@
 }
 
 .status {
-  color: red;
   font-weight: bold;
 }
 
 .ongoing {
   color: orange;
-  font-weight: bold;
+}
+
+.completed {
+  color: green;
 }
 
 .details-button {
@@ -109,11 +132,128 @@
   background-color: #138496;
 }
 
+/* Right Side Container */
+.right-side-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.right-side-container h4 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.ended-project-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 15px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ended-project-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ended-project-name {
+  font-weight: bold;
+  color: #333333;
+  font-size: 0.9rem;
+}
+
+.ended-project-date {
+  color: #666666;
+  font-size: 0.9rem;
+  padding-left: 10px;
+}
+
+.view-all-btn2 {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.view-all-btn2:hover {
+  background-color: #0056b3;
+}
+
+/* Modal Styles */
+.modalProject {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-contentProject {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 90%;
+}
+
+.modal-contentProject h4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.listul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.close-button1 {
+  position: absolute;
+  top: 100px;
+  right: 33%;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  background: none;
+  border: none;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+  .allContainer {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .table-header,
   .table-row {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .project-header h3 {
@@ -124,138 +264,8 @@
     font-size: 12px;
     padding: 8px 12px;
   }
-}
-.right-side-container {
-  float: right;
-  margin-top: 110px;
-  margin-right: 60px;
-  padding: 20px;
-  background-color: #f1f5f9; 
-  border-radius: 10px; 
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); 
-  font-family: Arial, sans-serif;
-  max-width: 300px;
-width: 500px;
-  /* transition: transform 0.3s ease, box-shadow 0.3s ease;  */
-}
 
-.right-side-container:hover {
-  transform: translateY(-3px); /* Subtle lift effect on hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+  .right-side-container {
+    max-width: 100%;
+  }
 }
-
-.right-side-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.right-side-container h4 {
-  font-size: 1.4rem; /* Slightly larger for prominence */
-  font-weight: 700; /* Stronger emphasis */
-  color: #333333; /* Darker and richer text color */
-  text-align: center;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #e0e0e0; /* Underline for separation */
-  padding-bottom: 10px;
-}
-
-.ended-project-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px; /* Slightly more padding for a balanced layout */
-  margin-bottom: 15px; /* Larger gap between cards */
-  background-color: #f9fafb; /* Soft background for cards */
-  border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
-  
-}
-
-.ended-project-card:hover {
-  transform: scale(1.02); 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
-}
-
-.ended-project-name {
-  font-weight: bold;
-  color: #333333; 
-  font-size: 0.9rem;
-}
-
-.ended-project-date {
-  color: #666666; 
-  font-size: 0.9rem; 
-}
-.view-all-btn2{
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.view-all-btn2:hover {
-  background-color: #0056b3;
-}
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 110%;
-  padding: 20px;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 50px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-.modal-content h4 {
-  margin-bottom: 15px;
-  text-align: center;
-}
-.modal-content ul {
-  list-style-type: none; 
-  padding: 0;
-  margin: 0; 
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 18px;
-  cursor: pointer;
-  color: #888;
-  font-weight: bold;
-  background: none;
-  border: none;
-}
-
-.close-button:hover {
-  color: #000;
-}
-/* chart */
-.heatmap-container {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  width: 700px;
-  position: absolute;
-  top: 700px;
-}
-
