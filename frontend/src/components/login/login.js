@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from './login.module.css'; // Import CSS module
+import styles from './login.module.css'; 
 import back4 from '../../images/back4.jpg'
 const Login = ({ onLogin }) => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });

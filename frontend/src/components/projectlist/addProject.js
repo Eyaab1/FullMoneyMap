@@ -18,7 +18,7 @@ const AddProject = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Fetch chefs de projet on component mount
+    // Fetch chefs de projet
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -185,8 +185,8 @@ const AddProject = () => {
                             onChange={handleChange}
                         >
                             <option value="" disabled>Select a state</option>
-                            <option value="en cours">En cours</option>
-                            <option value="terminé">Terminé</option>
+                            <option value="en cours">On going</option>
+                            <option value="terminé">Finished</option>
                         </select>
                     </div>
                     <div className="form-group">

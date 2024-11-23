@@ -10,7 +10,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
-  // Function to check and reset notifications for a new day
+  // Function to check and reset notifications
   const checkAndResetNotifications = () => {
     const lastViewedDate = localStorage.getItem('lastViewedDate');
     const todayDate = new Date().toISOString().split('T')[0];
@@ -22,7 +22,7 @@ const NavBar = () => {
   };
 
   useEffect(() => {
-    // Fetch notifications when the component mounts
+    // Fetch notifications 
     const fetchNotifications = async () => {
       const token = localStorage.getItem('token');
       if (token && user) {
@@ -36,15 +36,11 @@ const NavBar = () => {
 
           if (response.ok) {
             const projects = await response.json();
-
-            // Get current date and date for yesterday
             const today = new Date();
             const todayDate = today.toISOString().split('T')[0];
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
             const yesterdayDate = yesterday.toISOString().split('T')[0];
-
-            // Filter projects where the deadline is today or yesterday
             const relevantNotifications = projects.filter((project) => {
               const projectDate = new Date(project.date_fin).toISOString().split('T')[0];
               return projectDate === todayDate || projectDate === yesterdayDate;
@@ -52,8 +48,6 @@ const NavBar = () => {
 
             
             setNotifications(relevantNotifications);
-
-            // Check if notifications need resetting
             checkAndResetNotifications();
           } else {
             console.error('Failed to fetch projects:', response.statusText);
@@ -71,7 +65,7 @@ const NavBar = () => {
   const handleNotificationClick = () => {
     setShowNotifications((prev) => !prev);
     if (unreadNotifications) {
-      setUnreadNotifications(false); // Mark notifications as read
+      setUnreadNotifications(false);
     }
   };
 

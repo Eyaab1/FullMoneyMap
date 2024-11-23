@@ -10,11 +10,9 @@ exports.getAllSalaires = async (req, res) => {
     }
 };
 
-// Add a new freelancer
 exports.addSalaire = async (req, res) => {
     const { id_projet, id_freelancer, salaire } = req.body;
 
-    // Basic validation
     if (!id_projet || !id_freelancer || !salaire) {
         return res.status(400).json({ error: 'id_projet, id_freelancer, and salaire are required' });
     }
@@ -88,7 +86,6 @@ exports.getFreelancerFromSalaire = async (req, res) => {
     }
 
     try {
-        // Get salary details
         const salaireResult = await pool.query(`
             SELECT * FROM "Salaires"
             WHERE "id" = $1
@@ -100,7 +97,6 @@ exports.getFreelancerFromSalaire = async (req, res) => {
 
         const { id_freelancer } = salaireResult.rows[0];
 
-        // Now, get the freelancer details based on the id_freelancer
         const freelancerResult = await pool.query(`
             SELECT * FROM "Freelancers" WHERE "id" = $1
         `, [id_freelancer]);
@@ -124,7 +120,6 @@ exports.getProjectFromSalaire = async (req, res) => {
     }
 
     try {
-        // Get salary details
         const salaireResult = await pool.query(`
             SELECT * FROM "Salaires"
             WHERE "id" = $1
@@ -136,7 +131,6 @@ exports.getProjectFromSalaire = async (req, res) => {
 
         const { id_projet } = salaireResult.rows[0];
 
-        // Now, get the project details based on the id_projet
         const projectResult = await pool.query(`
             SELECT * FROM "Projets" WHERE "id" = $1
         `, [id_projet]);

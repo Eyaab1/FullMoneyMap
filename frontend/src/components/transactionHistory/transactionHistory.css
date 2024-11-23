@@ -1,6 +1,6 @@
 
 body {
-  overflow: hidden; /* Disable page scrolling */
+  overflow: hidden;
 }
 .transaction-history {
   position: relative;
@@ -17,8 +17,8 @@ body {
 .table-container {
   
   max-height: 500px; 
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #ddd; /* Optional: Add a border around the table */
+  overflow-y: auto; 
+  border: 1px solid #ddd;
 }
 .transaction-history:hover {
 }
@@ -150,10 +150,10 @@ body {
   font-size: 0.95em;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .transaction-history-container {
-    flex-direction: column; /* Stack elements on smaller screens */
+    flex-direction: column; 
   }
 
   .transaction-history {

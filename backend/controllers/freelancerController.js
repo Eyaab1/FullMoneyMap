@@ -1,6 +1,5 @@
-const { pool } = require('../config/database'); // Adjust the path to where your pool is defined
+const { pool } = require('../config/database');
 
-// Get all freelancers
 exports.getAllFreelancers = async (req, res) => {
     try {
         const result = await pool.query(`SELECT * FROM "Freelancers";`);
@@ -11,11 +10,9 @@ exports.getAllFreelancers = async (req, res) => {
     }
 };
 
-// Add a new freelancer
 exports.addFreelancer = async (req, res) => {
     const { nom, prenom, specialty } = req.body;
 
-    // Basic validation
     if (!nom || !prenom || !specialty) {
         return res.status(400).json({ error: 'Nom, prenom, and specialty are required' });
     }
@@ -34,9 +31,8 @@ exports.addFreelancer = async (req, res) => {
     }
 };
 
-// Get freelancer salary by freelancer ID
 exports.getFreelancerSalary = async (req, res) => {
-    const { id_freelancer } = req.params; // Assuming freelancer ID is passed as a route parameter
+    const { id_freelancer } = req.params;
 
     try {
         const result = await pool.query(`
@@ -57,9 +53,8 @@ exports.getFreelancerSalary = async (req, res) => {
     }
 };
 
-// Get freelancers by project ID
 exports.getFreelancersByProject = async (req, res) => {
-    const { id_projet } = req.params; // Assuming project ID is passed as a route parameter
+    const { id_projet } = req.params;
 
     try {
         const result = await pool.query(`

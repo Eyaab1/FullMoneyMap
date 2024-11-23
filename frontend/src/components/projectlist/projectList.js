@@ -13,7 +13,7 @@ const ProjectList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allEndedProjects, setAllEndedProjects] = useState([]);
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [showModal, setShowModal] = useState(false); 
   const [heatmapData, setHeatmapData] = useState(null); // Heatmap data
   const navigate = useNavigate();
 
@@ -60,7 +60,7 @@ const ProjectList = () => {
     fetchProjects();
   }, []);
 
-  // Function to generate heatmap data
+  // Function to generate heatmap
   const generateHeatmapData = (projects) => {
     const statuses = ['Ongoing', 'Ended', 'Paused'];
     const months = Array.from({ length: 12 }, (_, i) =>
@@ -120,8 +120,8 @@ const ProjectList = () => {
               <p>{project.nom}</p>
               <p className={project.etat === 'en cours' ? 'status ongoing' : 'status'}>On Going</p>
               <p>{project.manager_nom} {project.manager_prenom}</p>
-              <p>{new Date(project.date_fin).toLocaleString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'  })}</p> {/* Correct placement for Deadline */}
-              <p>{project.budget ? `${project.budget} dt` : 'N/A'}</p> {/* Correct placement for Budget */}
+              <p>{new Date(project.date_fin).toLocaleString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'  })}</p> 
+              <p>{project.budget ? `${project.budget} dt` : 'N/A'}</p> 
               <Link to={`/project/${project.id}`}>
                 <button className="details-button">Details</button>
               </Link>
@@ -165,7 +165,7 @@ const ProjectList = () => {
                   day: 'numeric',
                 })}
               </p>
-              {/* Add the Details button here */}
+   
               <Link to={`/project/${project.id}`}>
                 <button className="details-button">Details</button>
               </Link>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import adminPhoto from '../../../admin.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import ConfirmModal from '../../confirm/confirm'; // Import the custom ConfirmModal
+import ConfirmModal from '../../confirm/confirm'; 
 
 const Dashboard = ({ logout }) => {
   const [projects, setProjects] = useState([]);
@@ -15,8 +15,7 @@ const Dashboard = ({ logout }) => {
   const [showModal, setShowModal] = useState(false);
   const [projectIdToDelete, setProjectIdToDelete] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // New state for confirmation modal
-
+  const [showConfirmModal, setShowConfirmModal] = useState(false); 
   const navigate = useNavigate();
 
   const handleMouseEnter = () => setShowDropdown(true);
@@ -148,7 +147,6 @@ const Dashboard = ({ logout }) => {
     setShowConfirmModal(true);
   };
 
-  // Close modal and clear projectId
   const closeDeleteModal = () => {
     setShowConfirmModal(false);
     setProjectIdToDelete(null);
@@ -172,8 +170,6 @@ const Dashboard = ({ logout }) => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-
-      // Refresh the projects list after deletion
       setProjects(projects.filter(project => project.id !== projectIdToDelete));
       closeDeleteModal();
     } catch (error) {

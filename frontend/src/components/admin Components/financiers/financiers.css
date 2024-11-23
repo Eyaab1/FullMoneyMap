@@ -1,9 +1,9 @@
-/* navbar */
+
 .navbarAdmin {
   position: relative;
   display: inline-block;
 }
-/* Navbar styles */
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -12,9 +12,9 @@
   padding: 10px;
   color: white;
   height: 80px;
-  position: relative;  /* Ensure the navbar is positioned correctly */
-  z-index: 100; /* Ensure the navbar stays on top */
-  width: 100%;  /* Ensure the navbar spans the full width */
+  position: relative; 
+  z-index: 100;
+  width: 100%;  
 }
 
 .navbarLogo h2 {
@@ -46,7 +46,7 @@
   color: #333;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: none;
-  z-index: 200; /* Ensure the dropdown is above other content */
+  z-index: 200;
 }
 
 .dropdownMenu button {
@@ -58,7 +58,7 @@
 }
 
 .navbarAdmin:hover .dropdownMenu {
-  display: block;  /* Show the dropdown when hovered */
+  display: block;
 }
 .goBackButton {
   background-color: transparent;

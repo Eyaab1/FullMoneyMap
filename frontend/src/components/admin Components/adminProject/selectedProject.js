@@ -81,13 +81,13 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log('Fetched Managers:', response.data); // Log to check fetched data
+        console.log('Fetched Managers:', response.data);
         setManagers(response.data);
       } catch (err) {
         console.error('Error fetching managers:', err);
         setError('Failed to fetch managers');
       } finally {
-        setLoading(false); // Set loading to false after the fetch attempt
+        setLoading(false);
       }
     };
     fetchManagers();
@@ -144,19 +144,19 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
     fetchAllFreelancers();
   }, []);
   
-// Filter freelancers not already working on the project
+
 const filterAvailableFreelancers = () => {
   const currentFreelancerIds = freelancer.map(f => f.id);
   return allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
 };
 
-// Open modal for adding a freelancer
+
 const handleShowAddFreelancerModal = () => {
   setFilteredFreelancers(filterAvailableFreelancers());
   setShowAddFreelancerModal(true);
 };
 
-// Add a freelancer to the project
+
 const handleAddFreelancer = async () => {
   if (selectedFreelancer && salary) {
     const newFreelancer = allFreelancers.find(f => f.id === parseInt(selectedFreelancer));
@@ -254,7 +254,8 @@ const updateProject = async () => {
 
     if (response.status === 200) {
       console.log("Project updated successfully:", response.data);
-      setEditMode(false); // Exit edit mode after successful update
+      setEditMode(false);
+      
     } else {
       setError("Failed to update project");
     }
