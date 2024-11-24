@@ -16,6 +16,7 @@ const SelectedProject = () => {
 const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState('');
   const [salary, setSalary] = useState('');
+  const [userRole, setRole] = useState(null); 
   
     const [editedProject, setEditedProject] = useState({
       project_name: "",
@@ -26,7 +27,17 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
       manager_id: "",
     });
 
-    
+//roele admin
+useEffect(() => {
+  const fetchUserRole = () => {
+    const user = JSON.parse(localStorage.getItem('user')); 
+    if (user && user.role) {
+      setRole(user.role);
+    } else {
+      setRole(null);
+    }
+  };
+})
     
 
   const handleSalaryChange = (e, index) => {
@@ -144,7 +155,7 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
     fetchAllFreelancers();
   }, []);
   
-
+//filtre freelancers
 const filterAvailableFreelancers = () => {
   const currentFreelancerIds = freelancer.map(f => f.id);
   return allFreelancers.filter(f => !currentFreelancerIds.includes(f.id));
@@ -457,10 +468,11 @@ const updateProject = async () => {
       
       {/* Edit and Delete Buttons */}
       <div className="button-container">
+      {userRole === 'administrateur'&&(
       <button className="modify-button" onClick={toggleEditMode}>
           {editMode ? "Save" : "Edit"}
         </button>
-
+)}
         
       </div>
 
