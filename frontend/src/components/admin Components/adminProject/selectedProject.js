@@ -17,6 +17,10 @@ const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState('');
   const [salary, setSalary] = useState('');
   const [userRole, setRole] = useState(null); 
+
+  const projectBudget = project?.budget || 0;
+  const [errorMessage, setErrorMessage] = useState('');
+
   
     const [editedProject, setEditedProject] = useState({
       project_name: "",
@@ -168,11 +172,18 @@ const handleShowAddFreelancerModal = () => {
   setShowAddFreelancerModal(true);
 };
 
-
 const handleAddFreelancer = async () => {
   if (selectedFreelancer && salary) {
     const newFreelancer = allFreelancers.find(f => f.id === parseInt(selectedFreelancer));
     if (newFreelancer) {
+      const totalCurrentSalaries = freelancer.reduce((sum, f) => sum + parseFloat(f.salaire || 0), 0);
+      const remainingBudget = projectBudget - totalCurrentSalaries;
+
+      if (parseFloat(salary) > remainingBudget) {
+        alert(`The salary exceeds the remaining budget of ${remainingBudget}.`);
+        return;
+      }
+
       const data = {
         id_freelancer: newFreelancer.id,
         id_projet: id,
@@ -191,7 +202,7 @@ const handleAddFreelancer = async () => {
         if (response.status === 201) {
           setFreelancer([...freelancer, { ...newFreelancer, salaire: salary }]);
           setShowAddFreelancerModal(false);
-          setSelectedFreelancer(''); 
+          setSelectedFreelancer('');
           setSalary('');
         }
       } catch (err) {
@@ -286,6 +297,7 @@ const updateProject = async () => {
   
 
   return (
+    <div>
     <div className="selected-project">
       <div className="project-header">
         <div className="project-name">
@@ -431,8 +443,10 @@ const updateProject = async () => {
       {/* Modal for adding freelancer */}
       {showAddFreelancerModal && (
   <div className="modal">
-    <div className="modal-content">
-      <h3>Add Freelancer</h3>
+  <div className="modal-content">
+    <h3>Add Freelancer</h3>
+    <div className="form-group">
+      <label>Select Freelancer</label>
       <select
         value={selectedFreelancer}
         onChange={(e) => setSelectedFreelancer(e.target.value)}
@@ -444,25 +458,49 @@ const updateProject = async () => {
           </option>
         ))}
       </select>
+    </div>
+
+    <div className="form-group">
+      <label>Enter Salary</label>
       <input
         type="number"
         placeholder="Enter salary"
         value={salary}
-        onChange={(e) => setSalary(e.target.value)}
+        onChange={(e) => {
+          const enteredSalary = parseFloat(e.target.value);
+          const totalCurrentSalaries = freelancer.reduce((sum, f) => sum + parseFloat(f.salaire || 0), 0);
+          const remainingBudget = projectBudget - totalCurrentSalaries;
+
+          if (enteredSalary > remainingBudget) {
+            setErrorMessage(`Salary exceeds remaining budget of ${remainingBudget}.`);
+          } else {
+            setErrorMessage('');
+          }
+          setSalary(e.target.value);
+        }}
       />
-      <div className="button-container">
-        <button className="modify-button" onClick={handleAddFreelancer}>
-          Add
-        </button>
-        <button
-          className="modify-button delete-button"
-          onClick={() => setShowAddFreelancerModal(false)}
-        >
-          Cancel
-        </button>
-      </div>
+    </div>
+
+    {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+    <div className="button-container">
+      <button
+        className="modify-button"
+        onClick={handleAddFreelancer}
+        disabled={!!errorMessage || !selectedFreelancer || !salary}
+      >
+        Add
+      </button>
+      <button
+        className="modify-button delete-button"
+        onClick={() => setShowAddFreelancerModal(false)}
+      >
+        Cancel
+      </button>
     </div>
   </div>
+</div>
+
 )}
 
 
@@ -477,7 +515,26 @@ const updateProject = async () => {
         
       </div>
 
+
       
+    </div>
+
+
+    {/* <div>
+      <div className="selected-project">
+      <div className="project-header">
+        <div className="project-name">
+          <h2>Total expenses</h2>
+          <p></p>          
+        </div>
+        <div className="project-budget">
+          <h2>Current amount left</h2>
+          <p></p>
+          
+        </div>
+      </div>
+      </div>
+      </div> */}
     </div>
   );
 };
