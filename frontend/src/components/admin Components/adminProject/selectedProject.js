@@ -37,6 +37,7 @@ useEffect(() => {
       setRole(null);
     }
   };
+  fetchUserRole();
 })
     
 
